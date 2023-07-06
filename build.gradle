@@ -24,8 +24,17 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'mysql:mysql-connector-java'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task copyPrivate(type: Copy) {
+	copy {
+		from './submodule'
+		include "*.yml"
+		into 'src/main/resources'
+	}
 }
