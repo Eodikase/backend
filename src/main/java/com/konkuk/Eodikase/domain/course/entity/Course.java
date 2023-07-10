@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.course.entity;
 
+import com.konkuk.Eodikase.domain.audit.BaseEntity;
 import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.member.entity.Member;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "course")
-public class Course {
+public class Course extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class Course {
 
     private String courseName;
 
-    private String courseExplain;
+    private String courseDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -41,5 +42,5 @@ public class Course {
     private List<CourseHashtagRel> hashtagList = new ArrayList<>();
 
     @OneToMany(mappedBy = "course")
-    private List<CourseCourseDataRel> courseDatagList = new ArrayList<>();
+    private List<CourseCourseDataRel> phoneNumberList = new ArrayList<>();
 }

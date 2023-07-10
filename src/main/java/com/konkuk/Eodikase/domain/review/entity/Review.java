@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.review.entity;
 
+import com.konkuk.Eodikase.domain.audit.BaseEntity;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Table(name = "review")
-public class Review {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

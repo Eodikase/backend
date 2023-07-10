@@ -12,7 +12,7 @@ public class CourseCourseDataRel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="rel_id")
+    @Column(name="course_coursedata_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

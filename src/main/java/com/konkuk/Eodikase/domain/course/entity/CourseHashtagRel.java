@@ -12,7 +12,7 @@ public class CourseHashtagRel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="rel_id")
+    @Column(name="course_hashtag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

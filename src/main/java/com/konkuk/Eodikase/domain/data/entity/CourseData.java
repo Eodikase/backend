@@ -32,6 +32,6 @@ public class CourseData{
     private String imageList;
 
     @OneToMany(mappedBy = "courseData")
-    private List<CourseCourseDataRel> courseDatagList = new ArrayList<>();
+    private List<CourseCourseDataRel> courseDataList = new ArrayList<>();
 
 }
