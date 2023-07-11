@@ -9,6 +9,6 @@ public class TestController {
 
     @GetMapping("/test")
     public String test(){
-        return "jenkins10  build 어디카세 테스트 페이지";
+        return "jenkins11  build 어디카세 테스트 페이지";
     }
 }
