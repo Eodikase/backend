@@ -18,6 +18,7 @@ public class CourseData{
     @Id
     @GeneratedValue
     @Column(name="course_data_id")
+
     private Long id;
 
     private String name;
