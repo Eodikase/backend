@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @DiscriminatorValue("A")
-public class Activity extends CourseData{
+public class Activity extends CourseData {
     //TODO 각 특성에 맞는 데이터
     private String test;
 }
