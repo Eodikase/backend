@@ -24,9 +24,23 @@ public class CourseData{
 
     private String location;
 
+    private String locationDescription;
+
+    private String locationTransit;
+
+    private String category;
+
     private String operatingTime;
 
     private String phoneNum;
+
+    private String description;
+
+    private int scoreByNaver;
+
+    private String menu;
+
+    private String theme;
 
     //TODO 이미지 URL 형태로
     private String imageList;
