@@ -53,12 +53,6 @@ public class MemberService {
             throw new DuplicateNicknameException();
     }
 
-    private void validateEmail(String email) {
-        if (email.isBlank()) {
-            throw new InvalidEmailException();
-        }
-    }
-
     private void validatePassword(String password) {
         if (!PASSWORD_REGEX.matcher(password).matches()) {
             throw new InvalidPasswordException();
