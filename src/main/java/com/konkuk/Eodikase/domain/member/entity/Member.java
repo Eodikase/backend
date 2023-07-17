@@ -49,4 +49,13 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
+    public Member(String email, String password, String nickname) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+        this.platform = MemberPlatform.HOME;
+        this.role = MemberRole.USER;
+    }
+
 }
