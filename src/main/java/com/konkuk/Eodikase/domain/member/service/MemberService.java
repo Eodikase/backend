@@ -28,8 +28,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     public MemberSignUpResponse signUp(MemberSignUpRequest request) {
-        validatePassword(request.getPassword());
         validateDuplicateMember(request);
+        validatePassword(request.getPassword());
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         try {
