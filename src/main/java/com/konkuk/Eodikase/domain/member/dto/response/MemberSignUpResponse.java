@@ -1,16 +1,14 @@
-package com.konkuk.Eodikase.dto.request;
+package com.konkuk.Eodikase.domain.member.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
-public class MemberSignUpRequest {
+public class MemberSignUpResponse {
 
-    private String email;
-    private String password;
-    private String nickname;
+    private Long id;
 }

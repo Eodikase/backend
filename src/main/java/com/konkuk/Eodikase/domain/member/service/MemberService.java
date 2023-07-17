@@ -3,8 +3,9 @@ package com.konkuk.Eodikase.domain.member.service;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
-import com.konkuk.Eodikase.dto.request.MemberSignUpRequest;
-import com.konkuk.Eodikase.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.exception.badrequest.DuplicateMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class MemberService {
     private void validateDuplicateMember(MemberSignUpRequest memberSignUpRequest) {
         memberRepository.findByEmailAndPlatform(memberSignUpRequest.getEmail(), MemberPlatform.HOME)
                 .ifPresent(member -> {
-                    //throw new DuplicateMemberException("이미 존재하는 회원입니다.");
+                    throw new DuplicateMemberException();
                 });
     }
 }
