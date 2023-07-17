@@ -28,8 +28,6 @@ public class Member extends BaseEntity {
 
     private String nickname;
 
-    private String phoneNumber;
-
     @OneToMany(mappedBy = "member")
     private List<Bookmark> bookmarkList = new ArrayList<>();
 
