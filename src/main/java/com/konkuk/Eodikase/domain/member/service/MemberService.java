@@ -2,6 +2,7 @@ package com.konkuk.Eodikase.domain.member.service;
 
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberRole;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
@@ -21,7 +22,8 @@ public class MemberService {
         validateDuplicateMember(request);
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Member member = new Member(request.getEmail(), encodedPassword, request.getNickname());
+        Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME,
+                MemberRole.USER);
         return new MemberSignUpResponse(memberRepository.save(member).getId());
     }
 
