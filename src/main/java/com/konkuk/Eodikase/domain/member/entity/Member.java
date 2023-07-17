@@ -53,13 +53,14 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
-    public Member(String email, String password, String nickname, MemberPlatform platform, MemberRole role) {
+    public Member(String email, String password, String nickname, MemberPlatform platform) {
         validateNickname(nickname);
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.status = MemberStatus.MEMBER_ACTIVE;
-        this.role = role;
+        this.role = MemberRole.USER;
+        this.platform = platform;
     }
 
     private void validateNickname(String nickname) {

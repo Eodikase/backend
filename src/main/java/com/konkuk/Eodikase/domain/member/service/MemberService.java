@@ -33,8 +33,7 @@ public class MemberService {
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         try {
-            Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME,
-                    MemberRole.USER);
+            Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME);
             return new MemberSignUpResponse(memberRepository.save(member).getId());
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateMemberException();
