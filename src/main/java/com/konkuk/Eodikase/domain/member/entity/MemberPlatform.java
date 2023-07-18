@@ -4,7 +4,6 @@ public enum MemberPlatform {
     //TODO OAUTH2 구현목록 회의 필요
     HOME("HOME"),
     KAKAO("KAKAO"),
-    NAVER("NAVER"),
     GOOGLE("GOOGLE");
 
     private final String value;

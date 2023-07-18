@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("M")
+@DiscriminatorValue("R")
 public class Restaurant extends CourseData {
     //TODO 각 특성에 맞는 데이터
 }
