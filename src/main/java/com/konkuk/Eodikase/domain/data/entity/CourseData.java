@@ -23,21 +23,23 @@ public abstract class CourseData{
 
     private String name;
 
+    private String category;
+
     private String location;
+
+    private String phoneNumber;
+
+    private String scoreByNaver;
+
+    private String href;
 
     private String locationDescription;
 
     private String locationTransit;
 
-    private String category;
-
     private String operatingTime;
 
-    private String phoneNumber;
-
     private String description;
-
-    private int scoreByNaver;
 
     private String menu;
 
@@ -45,8 +47,6 @@ public abstract class CourseData{
 
     //TODO 이미지 URL 형태로
     private String imageList;
-
-    private String href;
 
     @Enumerated(value = EnumType.STRING)
     private CourseDataLocation courseDataLocation;
