@@ -24,8 +24,8 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원을 정상적으로 가입한다")
     void signUp() {
-        String expected = "kth990303@naver.com";
-        MemberSignUpRequest request = new MemberSignUpRequest(expected, "a1b2c3d4", "감자");
+        String expected = "dlawotn3@naver.com";
+        MemberSignUpRequest request = new MemberSignUpRequest(expected, "a1b2c3d4!", "감자");
 
         memberService.signUp(request);
 
