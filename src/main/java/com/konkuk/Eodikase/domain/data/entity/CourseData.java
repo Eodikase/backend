@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.data.entity;
 
 import com.konkuk.Eodikase.domain.course.entity.CourseCourseDataRel;
+import com.konkuk.Eodikase.domain.member.entity.MemberRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,10 +14,10 @@ import java.util.List;
 @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="dtype")
-public class CourseData{
+public abstract class CourseData{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="course_data_id")
     private Long id;
 
@@ -32,7 +33,7 @@ public class CourseData{
 
     private String operatingTime;
 
-    private String phoneNum;
+    private String phoneNumber;
 
     private String description;
 
@@ -44,6 +45,11 @@ public class CourseData{
 
     //TODO 이미지 URL 형태로
     private String imageList;
+
+    private String href;
+
+    @Enumerated(value = EnumType.STRING)
+    private CourseDataLocation courseDataLocation;
 
     @OneToMany(mappedBy = "courseData")
     private List<CourseCourseDataRel> courseDataList = new ArrayList<>();
