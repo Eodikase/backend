@@ -2,16 +2,13 @@ package com.konkuk.Eodikase.domain.member.service;
 
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
-import com.konkuk.Eodikase.domain.member.entity.MemberRole;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.exception.badrequest.DuplicateMemberException;
 import com.konkuk.Eodikase.exception.badrequest.DuplicateNicknameException;
-import com.konkuk.Eodikase.exception.badrequest.InvalidEmailException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidPasswordException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +19,7 @@ import java.util.regex.Pattern;
 public class MemberService {
 
     private static final Pattern PASSWORD_REGEX = Pattern
-            .compile("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()-=_+{}\\[\\]|;:',.<>/?]).{8,15}$");
+            .compile("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}");
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;

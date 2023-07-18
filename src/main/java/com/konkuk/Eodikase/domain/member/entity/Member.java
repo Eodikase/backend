@@ -5,7 +5,10 @@ import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.review.entity.Review;
 import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.regex.Pattern;
 @Entity
 @Getter
 @Table(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,6}$");
