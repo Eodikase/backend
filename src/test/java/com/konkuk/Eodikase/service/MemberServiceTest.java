@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
@@ -101,5 +102,27 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
                 password, "감자")))
                 .isInstanceOf(InvalidPasswordException.class);
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 이메일인 경우 True를 반환한다")
+    void isDuplicateEmailReturnTrue(){
+        String email = "dlawotn3@naver.com";
+        MemberSignUpRequest request = new MemberSignUpRequest(email, "edks123!", "감자");
+        memberService.signUp(request);
+
+        IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
+
+        assertThat(response.isDuplicate()).isTrue();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 이메일인 경우 False를 반환한다")
+    void isDuplicateEmailReturnFalse(){
+        String email = "dlawotn3@naver.com";
+
+        IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
+
+        assertThat(response.isDuplicate()).isFalse();
     }
 }
