@@ -2,12 +2,14 @@ package com.konkuk.Eodikase.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.exception.badrequest.DuplicateMemberException;
 import com.konkuk.Eodikase.exception.badrequest.DuplicateNicknameException;
+import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidPasswordException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -108,7 +110,7 @@ public class MemberServiceTest {
     @DisplayName("이미 존재하는 이메일인 경우 True를 반환한다")
     void isDuplicateEmailReturnTrue(){
         String email = "dlawotn3@naver.com";
-        MemberSignUpRequest request = new MemberSignUpRequest(email, "edks123!", "감자");
+        MemberSignUpRequest request = new MemberSignUpRequest(email, "edks1234!", "감자");
         memberService.signUp(request);
 
         IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
@@ -124,5 +126,46 @@ public class MemberServiceTest {
         IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
 
         assertThat(response.isDuplicate()).isFalse();
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 닉네임인 경우 True를 반환한다")
+    void isDuplicateNicknameReturnTrue() {
+        String nickname = "감자";
+        MemberSignUpRequest request = new MemberSignUpRequest("dlawotn3@naver.com", "edks1234!",
+                nickname);
+        memberService.signUp(request);
+
+        IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
+
+        assertThat(response.isResult()).isTrue();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 닉네임인 경우 False를 반환한다")
+    void isDuplicateNicknameReturnFalse() {
+        String nickname = "감자";
+
+        IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
+
+        assertThat(response.isResult()).isFalse();
+    }
+
+    @ParameterizedTest
+    @DisplayName("닉네임이 2~8자가 아니면 예외를 반환한다")
+    @ValueSource(strings = {"감", "감자포테이토예에에"})
+    void nicknameLengthValidation(String nickname) {
+        assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
+                "edks1234!", nickname)))
+                .isInstanceOf(InvalidNicknameException.class);
+    }
+
+    @ParameterizedTest
+    @DisplayName("비밀번호가 영어, 한글을 제외한 문자가 들어오면 예외를 반환한다")
+    @ValueSource(strings = {"123456", "abc1234", "감자!!!!"})
+    void nicknameConfigureValidation(String nickname) {
+        assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
+                "edks1234!", nickname)))
+                .isInstanceOf(InvalidNicknameException.class);
     }
 }
