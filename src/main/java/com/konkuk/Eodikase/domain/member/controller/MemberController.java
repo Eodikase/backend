@@ -2,6 +2,7 @@ package com.konkuk.Eodikase.domain.member.controller;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,13 @@ public class MemberController {
     @GetMapping("/check-duplicate/email")
     public ResponseEntity<IsDuplicateEmailResponse> checkDuplicateEmail(@RequestParam String value) {
         IsDuplicateEmailResponse response = memberService.isDuplicateEmail(value);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "회원가입 닉네임 중복체크")
+    @GetMapping("/check-duplicate/nickname")
+    public ResponseEntity<IsDuplicateNicknameResponse> checkDuplicateNickname(@RequestParam String value) {
+        IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(value);
         return ResponseEntity.ok(response);
     }
 }
