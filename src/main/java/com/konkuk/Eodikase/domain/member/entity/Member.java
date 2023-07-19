@@ -4,16 +4,24 @@ import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.review.entity.Review;
+import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 @Entity
 @Getter
 @Table(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
+
+    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,6}$");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +35,6 @@ public class Member extends BaseEntity {
     private String password;
 
     private String nickname;
-
-    private String phoneNumber;
 
     @OneToMany(mappedBy = "member")
     private List<Bookmark> bookmarkList = new ArrayList<>();
@@ -51,4 +57,19 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
+    public Member(String email, String password, String nickname, MemberPlatform platform) {
+        validateNickname(nickname);
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+        this.role = MemberRole.USER;
+        this.platform = platform;
+    }
+
+    private void validateNickname(String nickname) {
+        if (!NICKNAME_REGEX.matcher(nickname).matches()) {
+            throw new InvalidNicknameException();
+        }
+    }
 }
