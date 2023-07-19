@@ -11,8 +11,4 @@ import lombok.NoArgsConstructor;
 public class IsDuplicateEmailResponse {
 
     private boolean result;
-
-    public boolean isDuplicate() {
-        return result;
-    }
 }

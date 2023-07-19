@@ -7,10 +7,7 @@ import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
-import com.konkuk.Eodikase.exception.badrequest.DuplicateMemberException;
-import com.konkuk.Eodikase.exception.badrequest.DuplicateNicknameException;
-import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
-import com.konkuk.Eodikase.exception.badrequest.InvalidPasswordException;
+import com.konkuk.Eodikase.exception.badrequest.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,7 +112,7 @@ public class MemberServiceTest {
 
         IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
 
-        assertThat(response.isDuplicate()).isTrue();
+        assertThat(response.isResult()).isTrue();
     }
 
     @Test
@@ -125,7 +122,7 @@ public class MemberServiceTest {
 
         IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
 
-        assertThat(response.isDuplicate()).isFalse();
+        assertThat(response.isResult()).isFalse();
     }
 
     @Test
