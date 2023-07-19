@@ -158,7 +158,7 @@ public class MemberServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("비밀번호가 영어, 한글을 제외한 문자가 들어오면 예외를 반환한다")
+    @DisplayName("닉네임에 영어, 한글을 제외한 문자가 들어오면 예외를 반환한다")
     @ValueSource(strings = {"123456", "abc1234", "감자!!!!"})
     void nicknameConfigureValidation(String nickname) {
         assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
