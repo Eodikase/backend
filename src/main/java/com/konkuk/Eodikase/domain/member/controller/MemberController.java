@@ -1,16 +1,15 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,6 +25,20 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<MemberSignUpResponse> signUp(@RequestBody @Valid MemberSignUpRequest request) {
         MemberSignUpResponse response = memberService.signUp(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "회원가입 이메일 중복체크")
+    @GetMapping("/check-duplicate/email")
+    public ResponseEntity<IsDuplicateEmailResponse> checkDuplicateEmail(@RequestParam String value) {
+        IsDuplicateEmailResponse response = memberService.isDuplicateEmail(value);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "회원가입 닉네임 중복체크")
+    @GetMapping("/check-duplicate/nickname")
+    public ResponseEntity<IsDuplicateNicknameResponse> checkDuplicateNickname(@RequestParam String value) {
+        IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(value);
         return ResponseEntity.ok(response);
     }
 }
