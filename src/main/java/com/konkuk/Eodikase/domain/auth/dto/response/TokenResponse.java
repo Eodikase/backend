@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.member.dto.response;
+package com.konkuk.Eodikase.domain.auth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.member.dto.request;
+package com.konkuk.Eodikase.domain.auth.dto.request;
 
 import lombok.*;
 
