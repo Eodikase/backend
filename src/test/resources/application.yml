@@ -12,3 +12,7 @@ spring:
           enabled: true
         show_sql: true
         format_sql: true
+
+security.jwt.token:
+  secret-key: testtesttesttesttesttesttesttesttesttest
+  expire-length: 864000
