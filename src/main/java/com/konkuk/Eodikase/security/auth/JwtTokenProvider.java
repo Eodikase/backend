@@ -1,8 +1,8 @@
 package com.konkuk.Eodikase.security.auth;
 
+import com.konkuk.Eodikase.exception.unauthorized.InvalidTokenException;
+import com.konkuk.Eodikase.exception.unauthorized.TokenExpiredException;
 import io.jsonwebtoken.*;
-import mocacong.server.exception.unauthorized.InvalidTokenException;
-import mocacong.server.exception.unauthorized.TokenExpiredException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
