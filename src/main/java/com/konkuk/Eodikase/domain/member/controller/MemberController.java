@@ -1,7 +1,9 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
+import com.konkuk.Eodikase.domain.member.dto.request.AuthLoginRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +33,7 @@ public class MemberController {
 
     @Operation(summary = "이메일 로그인")
     @PostMapping
-    public ResponseEntity<TokenResponse> login(@RequestBody @Valid EmailLoginRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid AuthLoginRequest request) {
         TokenResponse response = memberService.login(request);
         return ResponseEntity.ok(response);
     }
