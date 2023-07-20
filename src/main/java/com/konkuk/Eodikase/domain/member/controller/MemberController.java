@@ -22,10 +22,17 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @Operation(summary = "회원가입")
+    @Operation(summary = "이메일 회원가입")
     @PostMapping
     public ResponseEntity<MemberSignUpResponse> signUp(@RequestBody @Valid MemberSignUpRequest request) {
         MemberSignUpResponse response = memberService.signUp(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "이메일 로그인")
+    @PostMapping
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid EmailLoginRequest request) {
+        TokenResponse response = memberService.login(request);
         return ResponseEntity.ok(response);
     }
 }
