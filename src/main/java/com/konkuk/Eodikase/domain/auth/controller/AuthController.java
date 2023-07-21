@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @Tag(name = "Login", description = "인증")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/login")
+@RequestMapping("/v1/login")
 public class AuthController {
 
     private final AuthService authService;
