@@ -5,9 +5,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class UnAuthorizedException extends EodikaseException {
+public class UnauthorizedException extends EodikaseException {
 
-    public UnAuthorizedException(String message, int code) {
+    public UnauthorizedException(String message, int code) {
         super(HttpStatus.UNAUTHORIZED, message, code);
     }
 }
