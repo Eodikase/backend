@@ -23,7 +23,6 @@ public class MemberService {
 
     private static final Pattern PASSWORD_REGEX = Pattern
             .compile("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}");
-    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$");
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -43,6 +42,12 @@ public class MemberService {
             throw new DuplicateMemberException();
         }
         validateDuplicateNickname(memberSignUpRequest.getNickname());
+    }
+
+    private void validateNickname(String nickname) {
+        if (nickname.isBlank()) {
+            throw new InvalidNicknameException();
+        }
     }
 
     private void validateDuplicateNickname(String nickname) {
@@ -74,12 +79,6 @@ public class MemberService {
 
         boolean existsNickname = memberRepository.existsByNickname(nickname);
         return new IsDuplicateNicknameResponse(existsNickname);
-    }
-
-    private void validateNickname(String nickname) {
-        if (nickname.isBlank() || !NICKNAME_REGEX.matcher(nickname).matches()) {
-            throw new InvalidNicknameException();
-        }
     }
 
     @Transactional
