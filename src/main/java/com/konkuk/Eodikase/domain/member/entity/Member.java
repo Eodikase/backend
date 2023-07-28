@@ -62,4 +62,8 @@ public class Member extends BaseEntity {
         this.role = MemberRole.USER;
         this.platform = platform;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
