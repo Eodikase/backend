@@ -1,11 +1,14 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
+import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +43,16 @@ public class MemberController {
     public ResponseEntity<IsDuplicateNicknameResponse> checkDuplicateNickname(@RequestParam String value) {
         IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(value);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @SecurityRequirement(name = "JWT")
+    @PutMapping("/info/reset-password")
+    public ResponseEntity<Void> resetPassword(
+            @LoginUserId Long memberId,
+            @RequestBody @Valid ResetPasswordRequest request
+    ) {
+        memberService.resetPassword(memberId, request);
+        return ResponseEntity.ok().build();
     }
 }
