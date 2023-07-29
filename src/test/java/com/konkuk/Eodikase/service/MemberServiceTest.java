@@ -1,6 +1,6 @@
 package com.konkuk.Eodikase.service;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;

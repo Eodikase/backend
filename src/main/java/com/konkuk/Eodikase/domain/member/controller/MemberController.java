@@ -1,10 +1,12 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
