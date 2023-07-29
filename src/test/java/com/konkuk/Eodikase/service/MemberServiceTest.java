@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.service;
 
+import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -164,5 +166,55 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
                 "edks1234!", nickname)))
                 .isInstanceOf(InvalidNicknameException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 회원 정보를 수정하면 수정된 정보로 갱신된다")
+    void updateProfileInfo() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String originalNickname = "감자";
+        String newNickname = "돌이";
+        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+
+        memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname));
+        Member updatedMember = memberRepository.findById(member.getId())
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(updatedMember.getNickname()).isEqualTo(newNickname)
+        );
+    }
+
+    @Test
+    @DisplayName("회원이 잘못된 닉네임 형식으로 회원정보 수정을 시도하면 예외를 반환한다")
+    void updateBadNicknameWithValidateException() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String originalNickname = "감자";
+        String newNickname = "감";
+        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+
+        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
+        assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
+                .isInstanceOf(InvalidNicknameException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 중복된 닉네임으로 회원정보 수정을 시도하면 예외를 반환한다")
+    void updateDuplicateNicknameWithValidateException() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String originalNickname = "감자";
+        String newNickname = "돌이";
+        Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME));
+        memberRepository.save(new Member("dlawotn2@naver.com", "edks123!!!", "돌이",
+                MemberPlatform.HOME));
+
+        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
+        assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
+                .isInstanceOf(DuplicateNicknameException.class);
     }
 }

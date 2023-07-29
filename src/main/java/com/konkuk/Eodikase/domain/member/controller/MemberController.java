@@ -1,11 +1,14 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
+import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
+import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +43,16 @@ public class MemberController {
     public ResponseEntity<IsDuplicateNicknameResponse> checkDuplicateNickname(@RequestParam String value) {
         IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(value);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "프로필 회원정보 수정")
+    @SecurityRequirement(name = "JWT")
+    @PutMapping(value = "/info")
+    public ResponseEntity<Void> updateProfileInfo(
+            @LoginUserId Long memberId,
+            @RequestBody @Valid MemberProfileUpdateRequest request
+    ) {
+        memberService.updateProfileInfo(memberId, request);
+        return ResponseEntity.ok().build();
     }
 }

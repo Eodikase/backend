@@ -12,9 +12,9 @@ import javax.validation.constraints.NotBlank;
 public class AuthLoginRequest {
 
     @Email(message = "1006:이메일 형식이 올바르지 않습니다.")
-    @NotBlank(message = "1012:공백일 수 없습니다.")
+    @NotBlank(message = "1005:공백일 수 없습니다.")
     private String email;
 
-    @NotBlank(message = "1012:공백일 수 없습니다.")
+    @NotBlank(message = "1005:공백일 수 없습니다.")
     private String password;
 }

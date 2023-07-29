@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.member.service;
 
+import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
@@ -8,10 +9,12 @@ import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.*;
+import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.regex.Pattern;
 
 @Service
@@ -20,7 +23,6 @@ public class MemberService {
 
     private static final Pattern PASSWORD_REGEX = Pattern
             .compile("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}");
-    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$");
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,6 +42,12 @@ public class MemberService {
             throw new DuplicateMemberException();
         }
         validateDuplicateNickname(memberSignUpRequest.getNickname());
+    }
+
+    private void validateNickname(String nickname) {
+        if (nickname.isBlank()) {
+            throw new InvalidNicknameException();
+        }
     }
 
     private void validateDuplicateNickname(String nickname) {
@@ -73,9 +81,12 @@ public class MemberService {
         return new IsDuplicateNicknameResponse(existsNickname);
     }
 
-    private void validateNickname(String nickname) {
-        if (nickname.isBlank() || !NICKNAME_REGEX.matcher(nickname).matches()) {
-            throw new InvalidNicknameException();
-        }
+    @Transactional
+    public void updateProfileInfo(Long memberId, MemberProfileUpdateRequest request) {
+        String updateNickname = request.getNickname();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        validateDuplicateNickname(updateNickname);
+        member.updateProfileInfo(updateNickname);
     }
 }
