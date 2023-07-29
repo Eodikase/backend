@@ -96,8 +96,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         String storedPassword = member.getPassword();
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Boolean isSuccess = storedPassword.equals(encodedPassword);
+        Boolean isSuccess = passwordEncoder.matches(request.getPassword(), storedPassword);
 
         return new PasswordVerifyResponse(isSuccess);
     }
