@@ -55,4 +55,15 @@ public class MemberController {
         memberService.updateProfileInfo(memberId, request);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "비밀번호 확인 인증")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping("/info/password")
+    public ResponseEntity<PasswordVerifyResponse> passwordVerify(
+            @LoginUserId Long memberId,
+            @RequestBody @Valid PasswordVerifyRequest request
+    ) {
+        PasswordVerifyResponse response = memberService.verifyPassword(memberId, request);
+        return ResponseEntity.ok(response);
+    }
 }
