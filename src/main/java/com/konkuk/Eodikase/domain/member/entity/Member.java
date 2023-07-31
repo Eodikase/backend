@@ -1,4 +1,5 @@
 package com.konkuk.Eodikase.domain.member.entity;
+
 import com.konkuk.Eodikase.domain.audit.BaseEntity;
 import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.comment.entity.Comment;
@@ -21,7 +22,8 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
-    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,6}$");
+    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$");
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,5 +73,10 @@ public class Member extends BaseEntity {
         if (!NICKNAME_REGEX.matcher(nickname).matches()) {
             throw new InvalidNicknameException();
         }
+    }
+
+    public void updateProfileInfo(String nickname) {
+        validateNickname(nickname);
+        this.nickname = nickname;
     }
 }
