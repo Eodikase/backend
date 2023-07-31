@@ -1,10 +1,12 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,5 +56,16 @@ public class MemberController {
     ) {
         memberService.updateProfileInfo(memberId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "비밀번호 확인 인증")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping("/info/password")
+    public ResponseEntity<PasswordVerifyResponse> passwordVerify(
+            @LoginUserId Long memberId,
+            @RequestBody @Valid PasswordVerifyRequest request
+    ) {
+        PasswordVerifyResponse response = memberService.verifyPassword(memberId, request);
+        return ResponseEntity.ok(response);
     }
 }

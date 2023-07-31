@@ -1,9 +1,11 @@
 package com.konkuk.Eodikase.service;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -182,9 +185,7 @@ public class MemberServiceTest {
         Member updatedMember = memberRepository.findById(member.getId())
                 .orElseThrow();
 
-        assertAll(
-                () -> assertThat(updatedMember.getNickname()).isEqualTo(newNickname)
-        );
+        assertThat(updatedMember.getNickname()).isEqualTo(newNickname);
     }
 
     @Test
@@ -216,5 +217,35 @@ public class MemberServiceTest {
         MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
                 .isInstanceOf(DuplicateNicknameException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 옳은 비밀번호로 비밀번호 확인 인증을 성공한다")
+    void verifyPasswordReturnTrue() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+        PasswordVerifyRequest request = new PasswordVerifyRequest(password);
+
+        PasswordVerifyResponse actual = memberService.verifyPassword(member.getId(), request);
+
+        assertThat(actual.getIsSuccess()).isTrue();
+    }
+
+    @Test
+    @DisplayName("회원이 틀린 비밀번호로 비밀번호 확인 인증을 실패한다")
+    void verifyPasswordReturnFalse() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+        PasswordVerifyRequest request = new PasswordVerifyRequest("wrong123!");
+
+        PasswordVerifyResponse actual = memberService.verifyPassword(member.getId(), request);
+
+        assertThat(actual.getIsSuccess()).isFalse();
     }
 }

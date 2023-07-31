@@ -1,10 +1,12 @@
 package com.konkuk.Eodikase.domain.member.service;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
@@ -88,5 +90,14 @@ public class MemberService {
                 .orElseThrow(NotFoundMemberException::new);
         validateDuplicateNickname(updateNickname);
         member.updateProfileInfo(updateNickname);
+    }
+
+    public PasswordVerifyResponse verifyPassword(Long memberId, PasswordVerifyRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        String storedPassword = member.getPassword();
+        Boolean isSuccess = passwordEncoder.matches(request.getPassword(), storedPassword);
+
+        return new PasswordVerifyResponse(isSuccess);
     }
 }
