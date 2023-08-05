@@ -3,6 +3,7 @@ package com.konkuk.Eodikase.service;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.GetUpdateProfileInfoResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
@@ -247,5 +248,22 @@ public class MemberServiceTest {
         PasswordVerifyResponse actual = memberService.verifyPassword(member.getId(), request);
 
         assertThat(actual.getIsSuccess()).isFalse();
+    }
+
+    @Test
+    @DisplayName("프로필 수정 페이지에서 내 정보를 조회한다")
+    void getUpdateProfileInfo() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+
+        GetUpdateProfileInfoResponse actual = memberService.getUpdateProfileInfo(member.getId());
+
+        assertAll(
+                () -> assertThat(actual.getEmail()).isEqualTo(email),
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname)
+        );
     }
 }
