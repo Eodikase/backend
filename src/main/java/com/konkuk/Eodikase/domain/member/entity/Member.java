@@ -33,7 +33,7 @@ public class Member extends BaseEntity {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(name = "password", length = 100)
     private String password;
 
     private String nickname;
@@ -56,6 +56,9 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberPlatform platform;
 
+    @Column(name = "platform_id")
+    private String platformId;
+
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
@@ -67,6 +70,14 @@ public class Member extends BaseEntity {
         this.status = MemberStatus.MEMBER_ACTIVE;
         this.role = MemberRole.USER;
         this.platform = platform;
+        this.platformId = null;
+    }
+
+    public Member(String email, MemberPlatform platform, String platformId) {
+        this.email = email;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+        this.platform = platform;
+        this.platformId = platformId;
     }
 
     public void registerOAuthMember(String email, String nickname) {

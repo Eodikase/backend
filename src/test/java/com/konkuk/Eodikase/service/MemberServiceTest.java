@@ -2,6 +2,7 @@ package com.konkuk.Eodikase.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
@@ -11,6 +12,7 @@ import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.exception.badrequest.*;
+import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -169,6 +171,32 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
                 "edks1234!", nickname)))
                 .isInstanceOf(InvalidNicknameException.class);
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 정보를 입력받아 회원을 가입한다")
+    void signUpByOAuthMember() {
+        String email = "dlawotn3@naver.com";
+        String platformId = "1234321";
+        Member savedMember = memberRepository.save(new Member(email, MemberPlatform.KAKAO, platformId));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
+                MemberPlatform.KAKAO.getValue(), platformId);
+
+        memberService.signUpByOAuthMember(request);
+
+        Member actual = memberRepository.findById(savedMember.getId()).orElseThrow();
+        assertThat(actual.getNickname()).isEqualTo("감자");
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
+    void signUpByOAuthMemberWhenInvalidPlatformInfo() {
+        memberRepository.save(new Member("dlawotn3@naver.com", MemberPlatform.KAKAO, "1234321"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
+                MemberPlatform.KAKAO.getValue(), "invalid");
+
+        assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
+                .isInstanceOf(NotFoundMemberException.class);
     }
 
     @Test
