@@ -69,6 +69,14 @@ public class Member extends BaseEntity {
         this.platform = platform;
     }
 
+    public void registerOAuthMember(String email, String nickname) {
+        validateNickname(nickname);
+        this.nickname = nickname;
+        if (email != null) {
+            this.email = email;
+        }
+    }
+
     private void validateNickname(String nickname) {
         if (!NICKNAME_REGEX.matcher(nickname).matches()) {
             throw new InvalidNicknameException();
