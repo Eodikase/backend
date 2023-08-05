@@ -58,6 +58,16 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "프로필 회원정보 수정 페이지 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/info")
+    public ResponseEntity<GetUpdateProfileInfoResponse> getUpdateProfileInfo(
+            @LoginUserId Long memberId
+    ) {
+        GetUpdateProfileInfoResponse response = memberService.getUpdateProfileInfo(memberId);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "비밀번호 확인 인증")
     @SecurityRequirement(name = "JWT")
     @PostMapping("/info/password")
