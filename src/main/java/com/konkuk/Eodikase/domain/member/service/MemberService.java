@@ -2,6 +2,7 @@ package com.konkuk.Eodikase.domain.member.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
@@ -78,6 +79,16 @@ public class MemberService {
 
         boolean existsNickname = memberRepository.existsByNickname(nickname);
         return new IsDuplicateNicknameResponse(existsNickname);
+    }
+
+    @Transactional
+    public OAuthMemberSignUpResponse signUpByOAuthMember(OAuthMemberSignUpRequest request) {
+        MemberPlatform platform = MemberPlatform.from(request.getPlatform());
+        Member member = memberRepository.findByPlatformAndPlatformId(platform, request.getPlatformId())
+                .orElseThrow(NotFoundMemberException::new);
+
+        member.registerOAuthMember(request.getEmail(), request.getNickname());
+        return new OAuthMemberSignUpResponse(member.getId());
     }
 
     @Transactional
