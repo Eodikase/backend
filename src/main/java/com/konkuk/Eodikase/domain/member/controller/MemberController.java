@@ -1,11 +1,14 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
+import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +32,13 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<MemberSignUpResponse> signUp(@RequestBody @Valid MemberSignUpRequest request) {
         MemberSignUpResponse response = memberService.signUp(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "OAuth 회원가입")
+    @PostMapping("/oauth")
+    public ResponseEntity<OAuthMemberSignUpResponse> signUp(@RequestBody @Valid OAuthMemberSignUpRequest request) {
+        OAuthMemberSignUpResponse response = memberService.signUpByOAuthMember(request);
         return ResponseEntity.ok(response);
     }
 
@@ -66,5 +76,26 @@ public class MemberController {
     ) {
         memberService.resetPassword(memberId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "프로필 회원정보 수정 페이지 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/info")
+    public ResponseEntity<GetUpdateProfileInfoResponse> getUpdateProfileInfo(
+            @LoginUserId Long memberId
+    ) {
+        GetUpdateProfileInfoResponse response = memberService.getUpdateProfileInfo(memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "비밀번호 확인 인증")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping("/info/password")
+    public ResponseEntity<PasswordVerifyResponse> passwordVerify(
+            @LoginUserId Long memberId,
+            @RequestBody @Valid PasswordVerifyRequest request
+    ) {
+        PasswordVerifyResponse response = memberService.verifyPassword(memberId, request);
+        return ResponseEntity.ok(response);
     }
 }

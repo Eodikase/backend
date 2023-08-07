@@ -13,6 +13,12 @@ spring:
         show_sql: true
         format_sql: true
 
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttesttest
   expire-length: 864000

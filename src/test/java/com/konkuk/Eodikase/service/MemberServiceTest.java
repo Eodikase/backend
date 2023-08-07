@@ -1,15 +1,20 @@
 package com.konkuk.Eodikase.service;
 
-import com.konkuk.Eodikase.domain.member.dto.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.GetUpdateProfileInfoResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.exception.badrequest.*;
+import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -199,6 +204,32 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("OAuth 유저 로그인 후 정보를 입력받아 회원을 가입한다")
+    void signUpByOAuthMember() {
+        String email = "dlawotn3@naver.com";
+        String platformId = "1234321";
+        Member savedMember = memberRepository.save(new Member(email, MemberPlatform.KAKAO, platformId));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
+                MemberPlatform.KAKAO.getValue(), platformId);
+
+        memberService.signUpByOAuthMember(request);
+
+        Member actual = memberRepository.findById(savedMember.getId()).orElseThrow();
+        assertThat(actual.getNickname()).isEqualTo("감자");
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
+    void signUpByOAuthMemberWhenInvalidPlatformInfo() {
+        memberRepository.save(new Member("dlawotn3@naver.com", MemberPlatform.KAKAO, "1234321"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
+                MemberPlatform.KAKAO.getValue(), "invalid");
+
+        assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
+                .isInstanceOf(NotFoundMemberException.class);
+    }
+
+    @Test
     @DisplayName("회원이 회원 정보를 수정하면 수정된 정보로 갱신된다")
     void updateProfileInfo() {
         String email = "dlawotn3@naver.com";
@@ -212,9 +243,7 @@ public class MemberServiceTest {
         Member updatedMember = memberRepository.findById(member.getId())
                 .orElseThrow();
 
-        assertAll(
-                () -> assertThat(updatedMember.getNickname()).isEqualTo(newNickname)
-        );
+        assertThat(updatedMember.getNickname()).isEqualTo(newNickname);
     }
 
     @Test
@@ -246,5 +275,52 @@ public class MemberServiceTest {
         MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
                 .isInstanceOf(DuplicateNicknameException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 옳은 비밀번호로 비밀번호 확인 인증을 성공한다")
+    void verifyPasswordReturnTrue() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+        PasswordVerifyRequest request = new PasswordVerifyRequest(password);
+
+        PasswordVerifyResponse actual = memberService.verifyPassword(member.getId(), request);
+
+        assertThat(actual.getIsSuccess()).isTrue();
+    }
+
+    @Test
+    @DisplayName("회원이 틀린 비밀번호로 비밀번호 확인 인증을 실패한다")
+    void verifyPasswordReturnFalse() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+        PasswordVerifyRequest request = new PasswordVerifyRequest("wrong123!");
+
+        PasswordVerifyResponse actual = memberService.verifyPassword(member.getId(), request);
+
+        assertThat(actual.getIsSuccess()).isFalse();
+    }
+
+    @Test
+    @DisplayName("프로필 수정 페이지에서 내 정보를 조회한다")
+    void getUpdateProfileInfo() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        memberRepository.save(member);
+
+        GetUpdateProfileInfoResponse actual = memberService.getUpdateProfileInfo(member.getId());
+
+        assertAll(
+                () -> assertThat(actual.getEmail()).isEqualTo(email),
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname)
+        );
     }
 }
