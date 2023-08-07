@@ -129,4 +129,11 @@ public class MemberService {
 
         return new GetUpdateProfileInfoResponse(member.getEmail(), member.getNickname());
     }
+
+    @Transactional
+    public void delete(Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        findMember.deleteMemberInfo();
+    }
 }

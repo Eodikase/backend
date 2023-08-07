@@ -102,4 +102,9 @@ public class Member extends BaseEntity {
         validateNickname(nickname);
         this.nickname = nickname;
     }
+
+    public void deleteMemberInfo() {
+        this.status = MemberStatus.MEMBER_QUIT;
+        //TODO: 프로필 이미지 null 처리
+    }
 }
