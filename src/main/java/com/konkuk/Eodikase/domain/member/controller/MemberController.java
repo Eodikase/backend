@@ -98,4 +98,12 @@ public class MemberController {
         PasswordVerifyResponse response = memberService.verifyPassword(memberId, request);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "회원 탈퇴")
+    @SecurityRequirement(name = "JWT")
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@LoginUserId Long memberId) {
+        memberService.delete(memberId);
+        return ResponseEntity.ok().build();
+    }
 }
