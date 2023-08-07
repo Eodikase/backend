@@ -103,4 +103,15 @@ public class Member extends BaseEntity {
         validateNickname(nickname);
         this.nickname = nickname;
     }
+
+    private void updateBeforeProfileImageNotUsedStatus() {
+        if (this.memberProfileImage != null) {
+            this.memberProfileImage.updateNotUsedStatus();
+        }
+    }
+
+    public void updateProfileImgUrl(MemberProfileImage memberProfileImage) {
+        updateBeforeProfileImageNotUsedStatus();
+        this.memberProfileImage = memberProfileImage;
+    }
 }

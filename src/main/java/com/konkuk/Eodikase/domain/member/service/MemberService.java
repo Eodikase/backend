@@ -7,12 +7,16 @@ import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
+import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
+import com.konkuk.Eodikase.support.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.regex.Pattern;
@@ -25,7 +29,9 @@ public class MemberService {
             .compile("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}");
 
     private final MemberRepository memberRepository;
+    private final MemberProfileImageRepository memberProfileImageRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AwsS3Uploader awsS3Uploader;
 
     public MemberSignUpResponse signUp(MemberSignUpRequest request) {
         validateDuplicateMember(request);
@@ -115,5 +121,19 @@ public class MemberService {
                 .orElseThrow(NotFoundMemberException::new);
 
         return new GetUpdateProfileInfoResponse(member.getEmail(), member.getNickname());
+    }
+
+    @Transactional
+    public void updateProfileImage(Long memberId, MultipartFile profileImg) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        if (profileImg == null) {
+            member.updateProfileImgUrl(null);
+            return;
+        }
+        String profileImgUrl = awsS3Uploader.uploadImage(profileImg);
+        MemberProfileImage memberProfileImage = new MemberProfileImage(profileImgUrl, true);
+        memberProfileImageRepository.save(memberProfileImage);
+        member.updateProfileImgUrl(memberProfileImage);
     }
 }
