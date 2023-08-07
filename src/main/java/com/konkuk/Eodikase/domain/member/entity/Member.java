@@ -6,6 +6,7 @@ import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.review.entity.Review;
 import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
+import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
