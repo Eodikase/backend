@@ -2,6 +2,7 @@ package com.konkuk.Eodikase.domain.member.repository;
 
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,6 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     Optional<Member> findByPlatformAndPlatformId(MemberPlatform platform, String platformId);
 
     @Modifying
-    @Query("delete from Member m where m.modifiedDate <= :thresholdDate")
-    void deleteMemberByCreatedTime(@Param("thresholdDate") Date thresholdDate);
+    @Query("delete from Member m where m.modifiedDate <= :thresholdDate and m.status = :status")
+    void deleteMemberByCreatedTime(@Param("thresholdDate") Date thresholdDate, @Param("status") MemberStatus status);
 }

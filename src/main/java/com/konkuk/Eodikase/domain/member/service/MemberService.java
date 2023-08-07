@@ -11,6 +11,7 @@ import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
@@ -146,6 +147,6 @@ public class MemberService {
         LocalDate thresholdLocalDate = LocalDate.now().minusDays(30);
         Instant instant = thresholdLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         Date thresholdDate = Date.from(instant);
-        memberRepository.deleteMemberByCreatedTime(thresholdDate);
+        memberRepository.deleteMemberByCreatedTime(thresholdDate, MemberStatus.MEMBER_QUIT);
     }
 }
