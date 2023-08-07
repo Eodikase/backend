@@ -33,7 +33,8 @@ public class MemberService {
         validateNickname(request.getNickname());
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME);
+        Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME,
+                null);
         return new MemberSignUpResponse(memberRepository.save(member).getId());
     }
 

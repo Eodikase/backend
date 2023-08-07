@@ -62,7 +62,8 @@ public class MemberServiceTest {
     @DisplayName("이미 가입된 이메일이 존재하면 회원 가입 시에 예외를 반환한다")
     void signUpByDuplicateEmailMember() {
         String email = "dlawotn3@naver.com";
-        memberRepository.save(new Member(email, "edks1234!", "감자", MemberPlatform.HOME));
+        memberRepository.save(new Member(email, "edks1234!", "감자", MemberPlatform.HOME,
+                null));
         MemberSignUpRequest request = new MemberSignUpRequest(email, "edks1234!", "어디카세");
 
         assertThatThrownBy(() -> memberService.signUp(request))
@@ -74,7 +75,7 @@ public class MemberServiceTest {
     void signUpByDuplicateNicknameMember() {
         String nickname = "감자";
         memberRepository.save(new Member("dlawotn3@naver.com", "edks1234!", nickname,
-                MemberPlatform.HOME));
+                MemberPlatform.HOME, null));
         MemberSignUpRequest request = new MemberSignUpRequest("eodikase3@naver.com", "edks1234!",
                 nickname);
 
@@ -207,7 +208,8 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
-        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
 
         memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname));
@@ -224,7 +226,8 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "감";
-        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
 
         MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
@@ -239,9 +242,10 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
-        Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME));
+        Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME,
+                null));
         memberRepository.save(new Member("dlawotn2@naver.com", "edks123!!!", "돌이",
-                MemberPlatform.HOME));
+                MemberPlatform.HOME, null));
 
         MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
@@ -254,7 +258,8 @@ public class MemberServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String nickname = "감자";
-        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
         PasswordVerifyRequest request = new PasswordVerifyRequest(password);
 
@@ -269,7 +274,8 @@ public class MemberServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String nickname = "감자";
-        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
         PasswordVerifyRequest request = new PasswordVerifyRequest("wrong123!");
 
@@ -284,7 +290,8 @@ public class MemberServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String nickname = "감자";
-        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
 
         GetUpdateProfileInfoResponse actual = memberService.getUpdateProfileInfo(member.getId());
