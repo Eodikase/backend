@@ -24,7 +24,6 @@ public class Member extends BaseEntity {
 
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$");
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")

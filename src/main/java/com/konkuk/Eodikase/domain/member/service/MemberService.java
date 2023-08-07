@@ -19,6 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 @Service
@@ -135,5 +139,13 @@ public class MemberService {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         findMember.deleteMemberInfo();
+    }
+
+    @Transactional
+    public void deleteMemberAfter30Days() {
+        LocalDate thresholdLocalDate = LocalDate.now().minusDays(30);
+        Instant instant = thresholdLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Date thresholdDate = Date.from(instant);
+        memberRepository.deleteMemberByCreatedTime(thresholdDate);
     }
 }
