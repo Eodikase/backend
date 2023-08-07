@@ -21,7 +21,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     Optional<Member> findByPlatformAndPlatformId(MemberPlatform platform, String platformId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Member m where m.modifiedDate <= :thresholdDate and m.status = :status")
     void deleteMemberByCreatedTime(@Param("thresholdDate") Date thresholdDate, @Param("status") MemberStatus status);
 }

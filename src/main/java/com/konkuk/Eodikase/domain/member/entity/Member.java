@@ -73,6 +73,18 @@ public class Member extends BaseEntity {
         this.platformId = null;
     }
 
+    public Member(String email, String password, String nickname,
+                  MemberPlatform platform, String platformId, MemberStatus status) {
+        validateNickname(nickname);
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.platform = platform;
+        this.role = MemberRole.USER;
+        this.platformId = platformId;
+        this.status = status;
+    }
+
     public Member(String email, MemberPlatform platform, String platformId) {
         this.email = email;
         this.status = MemberStatus.MEMBER_ACTIVE;
