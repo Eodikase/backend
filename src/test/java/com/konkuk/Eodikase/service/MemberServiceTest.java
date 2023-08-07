@@ -10,10 +10,14 @@ import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameRespons
 import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
+import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
+import com.konkuk.Eodikase.support.AwsS3Uploader;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,14 +25,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -36,13 +45,19 @@ public class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private MemberProfileImageRepository memberProfileImageRepository;
+    @Autowired
     private MemberService memberService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @MockBean
+    private AwsS3Uploader awsS3Uploader;
+
     @BeforeEach
     void setUp() {
         memberRepository.deleteAll();
+        memberProfileImageRepository.deleteAll();
     }
 
     @Test
@@ -299,6 +314,49 @@ public class MemberServiceTest {
         assertAll(
                 () -> assertThat(actual.getEmail()).isEqualTo(email),
                 () -> assertThat(actual.getNickname()).isEqualTo(nickname)
+        );
+    }
+
+    @Test
+    @DisplayName("회원의 프로필 이미지를 변경하면 s3 서버와 연동하여 이미지를 업로드한다")
+    void updateProfileImg() throws IOException {
+        String expected = "test_img.jpg";
+        String password = "edks1234!";
+        Member member = new Member("dlawotn3@naver.com", passwordEncoder.encode(password), "감자", MemberPlatform.HOME,
+                null);
+        memberRepository.save(member);
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + expected);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", expected, "jpg",
+                fileInputStream);
+
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
+        memberService.updateProfileImage(member.getId(), mockMultipartFile);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        assertAll(
+                () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(expected),
+                () -> Assertions.assertThat(actual.getMemberProfileImage().getIsUsed()).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("회원이 프로필 이미지를 삭제하거나 null로 설정하면 프로필 이미지는 null로 설정된다")
+    void updateProfileImgWithNull() {
+        MemberProfileImage memberProfileImage = new MemberProfileImage("test_img.jpg");
+        memberProfileImageRepository.save(memberProfileImage);
+        String password = "edks1234!";
+        Member member = new Member("dlawotn3@naver.com", passwordEncoder.encode(password), "감자",
+                MemberPlatform.HOME, memberProfileImage);
+        memberRepository.save(member);
+
+        memberService.updateProfileImage(member.getId(), null);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        assertAll(
+                () -> Assertions.assertThat(actual.getImgUrl()).isNull(),
+                () -> Assertions.assertThat(actual.getMemberProfileImage()).isNull()
         );
     }
 }

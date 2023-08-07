@@ -114,4 +114,8 @@ public class Member extends BaseEntity {
         updateBeforeProfileImageNotUsedStatus();
         this.memberProfileImage = memberProfileImage;
     }
+
+    public String getImgUrl() {
+        return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
+    }
 }
