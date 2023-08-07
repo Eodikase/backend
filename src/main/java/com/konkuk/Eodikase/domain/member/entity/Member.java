@@ -93,6 +93,10 @@ public class Member extends BaseEntity {
         }
     }
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
     private void validateNickname(String nickname) {
         if (!NICKNAME_REGEX.matcher(nickname).matches()) {
             throw new InvalidNicknameException();

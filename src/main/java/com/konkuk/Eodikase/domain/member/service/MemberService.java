@@ -2,6 +2,10 @@ package com.konkuk.Eodikase.domain.member.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
@@ -17,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.regex.Pattern;
 
 @Service
@@ -105,6 +109,16 @@ public class MemberService {
                 .orElseThrow(NotFoundMemberException::new);
         validateDuplicateNickname(updateNickname);
         member.updateProfileInfo(updateNickname);
+    }
+
+    @Transactional
+    public void resetPassword(Long memberId, ResetPasswordRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        String updatePassword = request.getPassword();
+        validatePassword(updatePassword);
+        String encryptedPassword = passwordEncoder.encode(updatePassword);
+        member.updatePassword(encryptedPassword);
     }
 
     public PasswordVerifyResponse verifyPassword(Long memberId, PasswordVerifyRequest request) {

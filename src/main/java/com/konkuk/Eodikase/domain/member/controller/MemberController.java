@@ -2,6 +2,10 @@ package com.konkuk.Eodikase.domain.member.controller;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.MemberSignUpResponse;
 import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
@@ -62,6 +66,17 @@ public class MemberController {
             @RequestBody @Valid MemberProfileUpdateRequest request
     ) {
         memberService.updateProfileInfo(memberId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @SecurityRequirement(name = "JWT")
+    @PutMapping("/info/reset-password")
+    public ResponseEntity<Void> resetPassword(
+            @LoginUserId Long memberId,
+            @RequestBody @Valid ResetPasswordRequest request
+    ) {
+        memberService.resetPassword(memberId, request);
         return ResponseEntity.ok().build();
     }
 
