@@ -2,6 +2,7 @@ package com.konkuk.Eodikase.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.GetUpdateProfileInfoResponse;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -172,6 +172,35 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
                 "edks1234!", nickname)))
                 .isInstanceOf(InvalidNicknameException.class);
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 요청을 받을 경우, 새로운 비밀번호로 변경한다")
+    void resetPassword() {
+        String email = "dlawotn3@naver.com";
+        String updatePassword = "newpwd1234!";
+        Member member = memberRepository.save(new Member(email, "edks1234!", "감자",
+                MemberPlatform.HOME));
+        ResetPasswordRequest request = new ResetPasswordRequest(updatePassword);
+
+        memberService.resetPassword(member.getId(), request);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        boolean isPasswordCorrect = passwordEncoder.matches(updatePassword, actual.getPassword());
+        assertThat(isPasswordCorrect).isTrue();
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 비밀번호로 비밀번호 찾기 요청을 받을 경우 예외를 반환한다")
+    void findAndResetPasswordWhenInvalidPassword() {
+        String email = "dlawotn3@naver.com";
+        Member member = memberRepository.save(new Member(email, "edks1234!", "감자",
+                MemberPlatform.HOME));
+        ResetPasswordRequest request = new ResetPasswordRequest("123");
+
+        assertThatThrownBy(() -> memberService.resetPassword(member.getId(), request))
+                .isInstanceOf(InvalidPasswordException.class);
     }
 
     @Test
