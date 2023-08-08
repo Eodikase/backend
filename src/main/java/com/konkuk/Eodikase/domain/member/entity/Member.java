@@ -24,7 +24,6 @@ public class Member extends BaseEntity {
 
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$");
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -62,7 +61,12 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
-    public Member(String email, String password, String nickname, MemberPlatform platform) {
+    @OneToOne
+    @JoinColumn(name = "member_profile_image_id")
+    private MemberProfileImage memberProfileImage;
+
+    public Member(String email, String password, String nickname, MemberPlatform platform,
+                  MemberProfileImage memberProfileImage) {
         validateNickname(nickname);
         this.email = email;
         this.password = password;
@@ -71,6 +75,7 @@ public class Member extends BaseEntity {
         this.role = MemberRole.USER;
         this.platform = platform;
         this.platformId = null;
+        this.memberProfileImage = memberProfileImage;
     }
 
     public Member(String email, MemberPlatform platform, String platformId) {
@@ -101,5 +106,20 @@ public class Member extends BaseEntity {
     public void updateProfileInfo(String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
+    }
+
+    private void updateBeforeProfileImageNotUsedStatus() {
+        if (this.memberProfileImage != null) {
+            this.memberProfileImage.updateNotUsedStatus();
+        }
+    }
+
+    public void updateProfileImgUrl(MemberProfileImage memberProfileImage) {
+        updateBeforeProfileImageNotUsedStatus();
+        this.memberProfileImage = memberProfileImage;
+    }
+
+    public String getImgUrl() {
+        return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
     }
 }
