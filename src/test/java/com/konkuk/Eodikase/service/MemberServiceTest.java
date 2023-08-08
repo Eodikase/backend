@@ -5,10 +5,7 @@ import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
-import com.konkuk.Eodikase.domain.member.dto.response.GetUpdateProfileInfoResponse;
-import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
-import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
-import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
+import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
@@ -387,6 +384,27 @@ public class MemberServiceTest {
         assertAll(
                 () -> Assertions.assertThat(actual.getImgUrl()).isNull(),
                 () -> Assertions.assertThat(actual.getMemberProfileImage()).isNull()
+        );
+    }
+
+    @Test
+    @DisplayName("마이페이지로 내 정보를 조회한다")
+    void findMyInfo() {
+        String imgUrl = "test_img.jpg";
+        String email = "dlawotn3@naver.com";
+        String nickname = "지슈";
+        MemberProfileImage memberProfileImage = new MemberProfileImage(imgUrl);
+        memberProfileImageRepository.save(memberProfileImage);
+        Member member = new Member(email, "jisu0708!", nickname, MemberPlatform.HOME,
+                memberProfileImage);
+        memberRepository.save(member);
+
+        MyPageResponse actual = memberService.findMyInfo(member.getId());
+
+        assertAll(
+                () -> assertThat(actual.getEmail()).isEqualTo(email),
+                () -> assertThat(actual.getImgUrl()).isEqualTo(imgUrl),
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname)
         );
     }
 }
