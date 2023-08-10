@@ -2,15 +2,23 @@ package com.konkuk.Eodikase.service;
 
 import com.konkuk.Eodikase.domain.member.dto.request.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.MemberSignUpRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.ResetPasswordRequest;
+import com.konkuk.Eodikase.domain.member.dto.request.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.domain.member.dto.response.GetUpdateProfileInfoResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateEmailResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.IsDuplicateNicknameResponse;
 import com.konkuk.Eodikase.domain.member.dto.response.PasswordVerifyResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
+import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
 import com.konkuk.Eodikase.exception.badrequest.*;
+import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
+import com.konkuk.Eodikase.support.AwsS3Uploader;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,14 +26,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -33,13 +46,19 @@ public class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private MemberProfileImageRepository memberProfileImageRepository;
+    @Autowired
     private MemberService memberService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @MockBean
+    private AwsS3Uploader awsS3Uploader;
+
     @BeforeEach
     void setUp() {
         memberRepository.deleteAll();
+        memberProfileImageRepository.deleteAll();
     }
 
     @Test
@@ -59,7 +78,8 @@ public class MemberServiceTest {
     @DisplayName("이미 가입된 이메일이 존재하면 회원 가입 시에 예외를 반환한다")
     void signUpByDuplicateEmailMember() {
         String email = "dlawotn3@naver.com";
-        memberRepository.save(new Member(email, "edks1234!", "감자", MemberPlatform.HOME));
+        memberRepository.save(new Member(email, "edks1234!", "감자", MemberPlatform.HOME,
+                null));
         MemberSignUpRequest request = new MemberSignUpRequest(email, "edks1234!", "어디카세");
 
         assertThatThrownBy(() -> memberService.signUp(request))
@@ -71,7 +91,7 @@ public class MemberServiceTest {
     void signUpByDuplicateNicknameMember() {
         String nickname = "감자";
         memberRepository.save(new Member("dlawotn3@naver.com", "edks1234!", nickname,
-                MemberPlatform.HOME));
+                MemberPlatform.HOME, null));
         MemberSignUpRequest request = new MemberSignUpRequest("eodikase3@naver.com", "edks1234!",
                 nickname);
 
@@ -172,13 +192,69 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("비밀번호 변경 요청을 받을 경우, 새로운 비밀번호로 변경한다")
+    void resetPassword() {
+        String email = "dlawotn3@naver.com";
+        String updatePassword = "newpwd1234!";
+        Member member = memberRepository.save(new Member(email, "edks1234!", "감자",
+                MemberPlatform.HOME, null));
+        ResetPasswordRequest request = new ResetPasswordRequest(updatePassword);
+
+        memberService.resetPassword(member.getId(), request);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        boolean isPasswordCorrect = passwordEncoder.matches(updatePassword, actual.getPassword());
+        assertThat(isPasswordCorrect).isTrue();
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 비밀번호로 비밀번호 찾기 요청을 받을 경우 예외를 반환한다")
+    void findAndResetPasswordWhenInvalidPassword() {
+        String email = "dlawotn3@naver.com";
+        Member member = memberRepository.save(new Member(email, "edks1234!", "감자",
+                MemberPlatform.HOME, null));
+        ResetPasswordRequest request = new ResetPasswordRequest("123");
+
+        assertThatThrownBy(() -> memberService.resetPassword(member.getId(), request))
+                .isInstanceOf(InvalidPasswordException.class);
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 정보를 입력받아 회원을 가입한다")
+    void signUpByOAuthMember() {
+        String email = "dlawotn3@naver.com";
+        String platformId = "1234321";
+        Member savedMember = memberRepository.save(new Member(email, MemberPlatform.KAKAO, platformId));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
+                MemberPlatform.KAKAO.getValue(), platformId);
+
+        memberService.signUpByOAuthMember(request);
+
+        Member actual = memberRepository.findById(savedMember.getId()).orElseThrow();
+        assertThat(actual.getNickname()).isEqualTo("감자");
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
+    void signUpByOAuthMemberWhenInvalidPlatformInfo() {
+        memberRepository.save(new Member("dlawotn3@naver.com", MemberPlatform.KAKAO, "1234321"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
+                MemberPlatform.KAKAO.getValue(), "invalid");
+
+        assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
+                .isInstanceOf(NotFoundMemberException.class);
+    }
+
+    @Test
     @DisplayName("회원이 회원 정보를 수정하면 수정된 정보로 갱신된다")
     void updateProfileInfo() {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
-        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
 
         memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname));
@@ -195,7 +271,8 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "감";
-        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
 
         MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
@@ -210,9 +287,10 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
-        Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME));
+        Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME,
+                null));
         memberRepository.save(new Member("dlawotn2@naver.com", "edks123!!!", "돌이",
-                MemberPlatform.HOME));
+                MemberPlatform.HOME, null));
 
         MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
@@ -225,7 +303,8 @@ public class MemberServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String nickname = "감자";
-        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
         PasswordVerifyRequest request = new PasswordVerifyRequest(password);
 
@@ -240,12 +319,74 @@ public class MemberServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String nickname = "감자";
-        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME);
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
         PasswordVerifyRequest request = new PasswordVerifyRequest("wrong123!");
 
         PasswordVerifyResponse actual = memberService.verifyPassword(member.getId(), request);
 
         assertThat(actual.getIsSuccess()).isFalse();
+    }
+
+    @Test
+    @DisplayName("프로필 수정 페이지에서 내 정보를 조회한다")
+    void getUpdateProfileInfo() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
+        memberRepository.save(member);
+
+        GetUpdateProfileInfoResponse actual = memberService.getUpdateProfileInfo(member.getId());
+
+        assertAll(
+                () -> assertThat(actual.getEmail()).isEqualTo(email),
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname)
+        );
+    }
+
+    @Test
+    @DisplayName("회원의 프로필 이미지를 변경하면 s3 서버와 연동하여 이미지를 업로드한다")
+    void updateProfileImg() throws IOException {
+        String expected = "test_img.jpg";
+        String password = "edks1234!";
+        Member member = new Member("dlawotn3@naver.com", passwordEncoder.encode(password), "감자", MemberPlatform.HOME,
+                null);
+        memberRepository.save(member);
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + expected);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", expected, "jpg",
+                fileInputStream);
+
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
+        memberService.updateProfileImage(member.getId(), mockMultipartFile);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        assertAll(
+                () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(expected),
+                () -> Assertions.assertThat(actual.getMemberProfileImage().getIsUsed()).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("회원이 프로필 이미지를 삭제하거나 null로 설정하면 프로필 이미지는 null로 설정된다")
+    void updateProfileImgWithNull() {
+        MemberProfileImage memberProfileImage = new MemberProfileImage("test_img.jpg");
+        memberProfileImageRepository.save(memberProfileImage);
+        String password = "edks1234!";
+        Member member = new Member("dlawotn3@naver.com", passwordEncoder.encode(password), "감자",
+                MemberPlatform.HOME, memberProfileImage);
+        memberRepository.save(member);
+
+        memberService.updateProfileImage(member.getId(), null);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        assertAll(
+                () -> Assertions.assertThat(actual.getImgUrl()).isNull(),
+                () -> Assertions.assertThat(actual.getMemberProfileImage()).isNull()
+        );
     }
 }

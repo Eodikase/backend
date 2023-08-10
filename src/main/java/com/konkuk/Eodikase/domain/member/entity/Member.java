@@ -24,7 +24,6 @@ public class Member extends BaseEntity {
 
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$");
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -33,7 +32,7 @@ public class Member extends BaseEntity {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(name = "password", length = 100)
     private String password;
 
     private String nickname;
@@ -56,10 +55,18 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberPlatform platform;
 
+    @Column(name = "platform_id")
+    private String platformId;
+
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
-    public Member(String email, String password, String nickname, MemberPlatform platform) {
+    @OneToOne
+    @JoinColumn(name = "member_profile_image_id")
+    private MemberProfileImage memberProfileImage;
+
+    public Member(String email, String password, String nickname, MemberPlatform platform,
+                  MemberProfileImage memberProfileImage) {
         validateNickname(nickname);
         this.email = email;
         this.password = password;
@@ -67,6 +74,27 @@ public class Member extends BaseEntity {
         this.status = MemberStatus.MEMBER_ACTIVE;
         this.role = MemberRole.USER;
         this.platform = platform;
+        this.platformId = null;
+        this.memberProfileImage = memberProfileImage;
+    }
+
+    public Member(String email, MemberPlatform platform, String platformId) {
+        this.email = email;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+        this.platform = platform;
+        this.platformId = platformId;
+    }
+
+    public void registerOAuthMember(String email, String nickname) {
+        validateNickname(nickname);
+        this.nickname = nickname;
+        if (email != null) {
+            this.email = email;
+        }
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     private void validateNickname(String nickname) {
@@ -78,5 +106,20 @@ public class Member extends BaseEntity {
     public void updateProfileInfo(String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
+    }
+
+    private void updateBeforeProfileImageNotUsedStatus() {
+        if (this.memberProfileImage != null) {
+            this.memberProfileImage.updateNotUsedStatus();
+        }
+    }
+
+    public void updateProfileImgUrl(MemberProfileImage memberProfileImage) {
+        updateBeforeProfileImageNotUsedStatus();
+        this.memberProfileImage = memberProfileImage;
+    }
+
+    public String getImgUrl() {
+        return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
     }
 }
