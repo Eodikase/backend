@@ -101,6 +101,14 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "마이페이지 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/mypage")
+    public ResponseEntity<MyPageResponse> findMyInfo(@LoginUserId Long memberId) {
+        MyPageResponse response = memberService.findMyInfo(memberId);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "마이페이지 - 프로필 이미지 수정")
     @SecurityRequirement(name = "JWT")
     @PutMapping(value = "/mypage/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
