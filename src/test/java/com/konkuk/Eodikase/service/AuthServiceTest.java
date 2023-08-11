@@ -40,7 +40,8 @@ class AuthServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String encodedPassword = passwordEncoder.encode(password);
-        Member member = new Member("dlawotn3@naver.com", encodedPassword, "감자", MemberPlatform.HOME);
+        Member member = new Member("dlawotn3@naver.com", encodedPassword, "감자", MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
         AuthLoginRequest loginRequest = new AuthLoginRequest(email, password);
 
@@ -55,7 +56,8 @@ class AuthServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "edks1234!";
         String encodedPassword = passwordEncoder.encode(password);
-        Member member = new Member("dlawotn3@naver.com", encodedPassword, "감자", MemberPlatform.HOME);
+        Member member = new Member("dlawotn3@naver.com", encodedPassword, "감자", MemberPlatform.HOME,
+                null);
         memberRepository.save(member);
 
         AuthLoginRequest loginRequest = new AuthLoginRequest(email, "wrongPassword");
