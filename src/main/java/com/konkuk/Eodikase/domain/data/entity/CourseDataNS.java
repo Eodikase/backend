@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Getter
-@Setter
 public class CourseDataNS  extends BaseCourseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +17,9 @@ public class CourseDataNS  extends BaseCourseEntity {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private com.konkuk.Eodikase.domain.data.entity.CourseDataCategory CourseDataCategory;
+    private CourseDataCategory CourseDataCategory;
 
     @OneToMany(mappedBy = "courseDataNS")
     private List<CourseCourseDataRel> courseDataList = new ArrayList<>();
+
 }

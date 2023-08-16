@@ -10,4 +10,5 @@ public enum CourseDataCategory {
     CourseDataCategory(final String category) {
         this.category = category;
     }
+
 }
