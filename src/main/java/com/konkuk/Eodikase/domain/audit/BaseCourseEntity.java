@@ -28,4 +28,10 @@ public abstract class BaseCourseEntity {
 
     private String imageUrl;
 
+    private String img1;
+
+    private String img2;
+
+    private String img3;
+
 }
