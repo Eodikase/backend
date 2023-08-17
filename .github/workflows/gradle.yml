@@ -18,8 +18,8 @@ permissions:
 env:
   S3_BUCKET_NAME: eodikase-cicd
   AWS_REGION: ap-northeast-2
-  AWS_CODE_DEPLOY_APPLICATION: CICD
-  AWS_CODE_DEPLOY_GROUP: cicd-group
+  CODE_DEPLOY_APPLICATION_NAME: CICD
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: cicd-group
   PROJECT_NAME: server
 
 jobs:
@@ -57,4 +57,4 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip
         
       - name: Deploy to AWS EC2 from S3
-        run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip
+        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APPLICATION_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODE_DEPLOY_DEPLOYMENT_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip
