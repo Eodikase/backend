@@ -1,18 +1,31 @@
-#!/bin/bash
+REPOSITORY=/home/ubuntu/backend
+PROJECT_NAME=server-0.0.1-SNAPSHOT.jar
 
-# Eodikase-0.0.1-SNAPSHOT.jar가 실행 중이라면 프로세스를 종료합니다.
-ps -ef | grep "Eodikase-0.0.1-SNAPSHOT.jar" | grep -v grep | awk '{print $2}' | xargs kill -9 2> /dev/null
+echo "> Build 파일 복사"
+sudo cp $REPOSITORY/build/libs/*.jar $REPOSITORY/
 
-# 종료 이력을 파악하여 적절한 문구를 출력합니다.
-if [ $? -eq 0 ];then
-    echo "my-application Stop Success"
+echo "> 현재 구동 중인 애플리케이션 pid 확인"
+CURRENT_PID=$(pgrep -f $PROJECT_NAME)
+
+echo "현재 구동 중인 애플리케이션 pid: $CURRENT_PID"
+
+if [ -z "$CURRENT_PID" ];
+then
+  echo "> 현재 구동 중인 애플리케이션이 없으므로 종료하지 않습니다"
 else
-    echo "my-application Not Running"
+  echo "> kill -9 $CURRENT_PID"
+  kill -9 $CURRENT_PID
+  sleep 5
 fi
 
-# Eodikase-0.0.1-SNAPSHOT.jar를 다시 실행하기 위한 과정을 진행합니다.
-echo "my-application Restart!"
-echo $1
+echo "> 새 애플리케이션 배포"
+JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
 
-# nohup 명령어를 통해 백그라운드에서 Eodikase-0.0.1-SNAPSHOT.jar를 실행합니다.
-nohup java -jar build/libs/Eodikase-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev > /dev/null 2>&1 &
+echo "> JAR_NAME: $JAR_NAME"
+
+echo "> $JAR_NAME 에 실행권한 추가"
+
+sudo chmod +x $JAR_NAME
+
+echo "> $JAR_NAME 실행"
+nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
