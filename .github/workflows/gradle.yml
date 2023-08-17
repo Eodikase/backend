@@ -18,6 +18,9 @@ permissions:
 env:
   S3_BUCKET_NAME: eodikase-cicd
   AWS_REGION: ap-northeast-2
+  AWS_CODE_DEPLOY_APPLICATION: CICD
+  AWS_CODE_DEPLOY_GROUP: cicd-group
+  PROJECT_NAME: server
 
 jobs:
   build:
@@ -53,4 +56,5 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
- 
+      - name: Deploy to AWS EC2 from S3
+        run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip
