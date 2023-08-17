@@ -16,7 +16,7 @@ on:
 permissions:
   contents: read
 env:
-  S3_BUCKET_NAME: eodikase-bucket
+  S3_BUCKET_NAME: eodikase-cicd
   AWS_REGION: ap-northeast-2
 
 jobs:
