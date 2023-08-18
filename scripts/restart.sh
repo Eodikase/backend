@@ -1,5 +1,5 @@
 REPOSITORY=/home/ubuntu/backend
-PROJECT_NAME=server-0.0.1-SNAPSHOT.jar
+PROJECT_NAME=Eodikase-0.0.1-SNAPSHOT.jar
 
 echo "> Build 파일 복사"
 sudo cp $REPOSITORY/build/libs/*.jar $REPOSITORY/
