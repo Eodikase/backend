@@ -9,6 +9,6 @@ public class TestController {
 
     @GetMapping("/test")
     public String test(){
-        return "githubactionci/cd test in running plz!!!!";
+        return "githubactionci/cd test in running plzplz!!!!";
     }
 }
