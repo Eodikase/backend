@@ -11,6 +11,8 @@ permissions:
   - object: /home/ubuntu/backend
     owner: ubuntu
     group: ubuntu
+    pattern: "**"
+    mode: 755
     
 hooks:
   ApplicationStart:
