@@ -91,11 +91,31 @@ public class Member extends BaseEntity {
         this.status = status;
     }
 
-    public Member(String email, MemberPlatform platform, String platformId) {
+    public Member(String email, String password, String nickname, MemberProfileImage memberProfileImage,
+                  MemberPlatform platform, String platformId) {
+        validateNickname(nickname);
         this.email = email;
-        this.status = MemberStatus.MEMBER_ACTIVE;
+        this.password = password;
+        this.nickname = nickname;
+        this.memberProfileImage = memberProfileImage;
         this.platform = platform;
         this.platformId = platformId;
+        this.role = MemberRole.USER;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+    }
+
+    public Member(String email, MemberPlatform platform, String platformId) {
+        this.email = email;
+        this.platform = platform;
+        this.platformId = platformId;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+    }
+
+    public Member(String email, MemberPlatform platform, String platformId, MemberStatus status) {
+        this.email = email;
+        this.platform = platform;
+        this.platformId = platformId;
+        this.status = status;
     }
 
     public void registerOAuthMember(String email, String nickname) {

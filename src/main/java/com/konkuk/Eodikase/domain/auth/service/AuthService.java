@@ -69,6 +69,7 @@ public class AuthService {
                 .map(memberId -> {
                     Member findMember = memberRepository.findById(memberId)
                             .orElseThrow(NotFoundMemberException::new);
+                    validateStatus(findMember);
                     String token = issueToken(findMember);
                     // OAuth 로그인은 성공했지만 회원가입에 실패한 경우
                     if (!findMember.isRegisteredOAuthMember()) {
@@ -77,7 +78,7 @@ public class AuthService {
                     return new OAuthTokenResponse(token, findMember.getEmail(), true, platformId);
                 })
                 .orElseGet(() -> {
-                    Member oauthMember = new Member(email, platform, platformId);
+                    Member oauthMember = new Member(email, platform, platformId, MemberStatus.MEMBER_ACTIVE);
                     Member savedMember = memberRepository.save(oauthMember);
                     String token = issueToken(savedMember);
                     return new OAuthTokenResponse(token, email, false, platformId);

@@ -1,6 +1,8 @@
 package com.konkuk.Eodikase.service;
 
 import com.konkuk.Eodikase.domain.auth.dto.request.AuthLoginRequest;
+import com.konkuk.Eodikase.domain.auth.dto.request.KakaoLoginRequest;
+import com.konkuk.Eodikase.domain.auth.dto.response.OAuthTokenResponse;
 import com.konkuk.Eodikase.domain.auth.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import com.konkuk.Eodikase.domain.member.entity.Member;
@@ -9,15 +11,22 @@ import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.PasswordMismatchException;
 import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
+import com.konkuk.Eodikase.security.auth.OAuthPlatformMemberResponse;
+import com.konkuk.Eodikase.security.auth.kakao.KakaoOAuthUserProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.junit.jupiter.api.BeforeEach;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @ServiceTest
 class AuthServiceTest {
@@ -28,6 +37,9 @@ class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthService authService;
+
+    @MockBean
+    private KakaoOAuthUserProvider kakaoOAuthUserProvider;
 
     @BeforeEach
     void setUp() {
@@ -79,5 +91,70 @@ class AuthServiceTest {
 
         assertThrows(InactiveMemberException.class,
                 () -> authService.login(loginRequest));
+    }
+
+    @Test
+    @DisplayName("Kakao OAuth 로그인 시 가입되지 않은 회원일 경우 이메일 값을 보내고 isRegistered 값을 false로 보낸다")
+    void loginKakaoOAuthNotRegistered() {
+        String expected = "dlawotn3@kakao.com";
+        String platformId = "1234321";
+        when(kakaoOAuthUserProvider.getKakaoPlatformMember(anyString()))
+                .thenReturn(new OAuthPlatformMemberResponse(platformId, expected));
+
+        OAuthTokenResponse actual = authService.kakaoOAuthLogin(new KakaoLoginRequest("token"));
+
+        assertAll(
+                () -> assertThat(actual.getToken()).isNotNull(),
+                () -> assertThat(actual.getEmail()).isEqualTo(expected),
+                () -> assertThat(actual.getIsRegistered()).isFalse(),
+                () -> assertThat(actual.getPlatformId()).isEqualTo(platformId)
+        );
+    }
+
+    @Test
+    @DisplayName("Kakao OAuth 로그인 시 이미 가입된 회원일 경우 토큰과 이메일, 그리고 isRegistered 값을 true로 보낸다")
+    void loginKakaoOAuthRegisteredAndMocacongMember() {
+        String expected = "dlawotn3@kakao.com";
+        String platformId = "1234321";
+        Member member = new Member(
+                expected,
+                null,
+                "메리",
+                null,
+                MemberPlatform.KAKAO,
+                platformId
+        );
+        memberRepository.save(member);
+        when(kakaoOAuthUserProvider.getKakaoPlatformMember(anyString()))
+                .thenReturn(new OAuthPlatformMemberResponse(platformId, expected));
+
+        OAuthTokenResponse actual = authService.kakaoOAuthLogin(new KakaoLoginRequest("token"));
+
+        assertAll(
+                () -> assertThat(actual.getToken()).isNotNull(),
+                () -> assertThat(actual.getEmail()).isEqualTo(expected),
+                () -> assertThat(actual.getIsRegistered()).isTrue(),
+                () -> assertThat(actual.getPlatformId()).isEqualTo(platformId)
+        );
+    }
+
+    @Test
+    @DisplayName("Kakao OAuth 로그인 시 등록은 완료됐지만 회원가입 절차에 실패해 닉네임이 없으면 isRegistered 값을 false로 보낸다")
+    void loginKakaoOAuthRegisteredButNotMocacongMember() {
+        String expected = "dlawotn3@kakao.com";
+        String platformId = "1234321";
+        Member member = new Member("dlawotn3@kakao.com", MemberPlatform.KAKAO, "1234321");
+        memberRepository.save(member);
+        when(kakaoOAuthUserProvider.getKakaoPlatformMember(anyString()))
+                .thenReturn(new OAuthPlatformMemberResponse(platformId, expected));
+
+        OAuthTokenResponse actual = authService.kakaoOAuthLogin(new KakaoLoginRequest("token"));
+
+        assertAll(
+                () -> assertThat(actual.getToken()).isNotNull(),
+                () -> assertThat(actual.getEmail()).isEqualTo(expected),
+                () -> assertThat(actual.getIsRegistered()).isFalse(),
+                () -> assertThat(actual.getPlatformId()).isEqualTo(platformId)
+        );
     }
 }
