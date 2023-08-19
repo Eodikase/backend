@@ -140,4 +140,8 @@ public class Member extends BaseEntity {
     public String getImgUrl() {
         return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
     }
+
+    public boolean isRegisteredOAuthMember() {
+        return nickname != null;
+    }
 }
