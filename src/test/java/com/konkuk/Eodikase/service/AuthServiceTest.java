@@ -5,8 +5,10 @@ import com.konkuk.Eodikase.domain.auth.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.PasswordMismatchException;
+import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@ServiceTest
 class AuthServiceTest {
 
     @Autowired
@@ -61,6 +63,21 @@ class AuthServiceTest {
         AuthLoginRequest loginRequest = new AuthLoginRequest(email, "wrongPassword");
 
         assertThrows(PasswordMismatchException.class,
+                () -> authService.login(loginRequest));
+    }
+
+    @Test
+    @DisplayName("status가 QUIT인 회원이 자체 로그인 시도할 시 예외를 반환한다")
+    void loginWithQuitStatus() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks123!";
+        String encodedPassword = passwordEncoder.encode(password);
+        Member member = new Member("dlawotn3@naver.com", encodedPassword, "메리", MemberPlatform.HOME,
+                null, MemberStatus.MEMBER_QUIT);
+        memberRepository.save(member);
+        AuthLoginRequest loginRequest = new AuthLoginRequest(email, password);
+
+        assertThrows(InactiveMemberException.class,
                 () -> authService.login(loginRequest));
     }
 }

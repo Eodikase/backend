@@ -8,6 +8,7 @@ import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
@@ -31,13 +32,14 @@ import javax.transaction.Transactional;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ServiceTest
 public class MemberServiceTest {
 
     @Autowired
@@ -342,6 +344,22 @@ public class MemberServiceTest {
                 () -> assertThat(actual.getEmail()).isEqualTo(email),
                 () -> assertThat(actual.getNickname()).isEqualTo(nickname)
         );
+    }
+
+    @Test
+    @DisplayName("회원을 정상적으로 탈퇴한다")
+    void deleteMember() {
+        String email = "dlawotn3@naver.com";
+        String password = "edks1234!";
+        String nickname = "감자";
+        Member member = new Member(email, passwordEncoder.encode(password), nickname, MemberPlatform.HOME,
+                null);
+        memberRepository.save(member);
+
+        memberService.delete(member.getId());
+
+        Optional<Member> findMember = memberRepository.findById(member.getId());
+        assertThat(findMember.get().getStatus()).isEqualTo(MemberStatus.MEMBER_QUIT);
     }
 
     @Test

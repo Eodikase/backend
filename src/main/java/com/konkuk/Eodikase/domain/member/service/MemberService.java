@@ -11,6 +11,7 @@ import com.konkuk.Eodikase.domain.member.dto.request.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.dto.response.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
+import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
@@ -23,6 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 @Service
@@ -135,6 +140,21 @@ public class MemberService {
                 .orElseThrow(NotFoundMemberException::new);
 
         return new GetUpdateProfileInfoResponse(member.getEmail(), member.getNickname());
+    }
+
+    @Transactional
+    public void delete(Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        findMember.deleteMemberInfo();
+    }
+
+    @Transactional
+    public void deleteMemberAfter30Days() {
+        LocalDate thresholdLocalDate = LocalDate.now().minusDays(30);
+        Instant instant = thresholdLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Date thresholdDate = Date.from(instant);
+        memberRepository.deleteMemberByCreatedTime(thresholdDate, MemberStatus.MEMBER_QUIT);
     }
 
     public MyPageResponse findMyInfo(Long memberId) {

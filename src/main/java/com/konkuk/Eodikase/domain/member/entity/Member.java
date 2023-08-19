@@ -6,6 +6,7 @@ import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.review.entity.Review;
 import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
+import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -78,6 +79,18 @@ public class Member extends BaseEntity {
         this.memberProfileImage = memberProfileImage;
     }
 
+    public Member(String email, String password, String nickname,
+                  MemberPlatform platform, String platformId, MemberStatus status) {
+        validateNickname(nickname);
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.platform = platform;
+        this.role = MemberRole.USER;
+        this.platformId = platformId;
+        this.status = status;
+    }
+
     public Member(String email, MemberPlatform platform, String platformId) {
         this.email = email;
         this.status = MemberStatus.MEMBER_ACTIVE;
@@ -106,6 +119,11 @@ public class Member extends BaseEntity {
     public void updateProfileInfo(String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
+    }
+
+    public void deleteMemberInfo() {
+        this.status = MemberStatus.MEMBER_QUIT;
+        this.memberProfileImage = null;
     }
 
     private void updateBeforeProfileImageNotUsedStatus() {
