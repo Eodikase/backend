@@ -31,10 +31,6 @@ oauth:
     client-id: test
     client-secret: test
     redirect-uri: test
-  apple:
-    iss: https://appleid.apple.com
-    client-id: test
-    nonce: nonce
 
 cloud:
   aws:
