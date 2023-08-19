@@ -27,7 +27,7 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="member_id")
+    @Column(name= "member_id")
     private Long id;
 
     @Column(name = "email", nullable = false, length = 100)
@@ -36,6 +36,7 @@ public class Member extends BaseEntity {
     @Column(name = "password", length = 100)
     private String password;
 
+    @Column(name = "nickname", unique = true)
     private String nickname;
 
     @OneToMany(mappedBy = "member")
