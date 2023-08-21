@@ -18,8 +18,8 @@ permissions:
 env:
   S3_BUCKET_NAME: eodikase-cicd
   AWS_REGION: ap-northeast-2
-  CODE_DEPLOY_APPLICATION_NAME: CICD
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: cicd-group
+  CODE_DEPLOY_APPLICATION_NAME: eodikase
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: eodikase-group
   PROJECT_NAME: server
 
 jobs:
