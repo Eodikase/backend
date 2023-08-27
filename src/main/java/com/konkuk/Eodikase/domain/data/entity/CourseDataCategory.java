@@ -7,6 +7,7 @@ public enum CourseDataCategory {
 
     private final String category;
 
+
     CourseDataCategory(final String category) {
         this.category = category;
     }
