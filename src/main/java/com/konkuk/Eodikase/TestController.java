@@ -9,6 +9,6 @@ public class TestController {
 
     @GetMapping("/test")
     public String test(){
-        return "맥북 스타벅스5!!";
+        return "yml 관련 서브모듈 브랜치 업데이트";
     }
 }
