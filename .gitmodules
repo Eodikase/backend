@@ -1,3 +1,5 @@
 [submodule "submodule"]
 	path = submodule
 	url = https://github.com/Eodikase/submodule.git
+[submodule "application.yml"]
+	branch = develop
