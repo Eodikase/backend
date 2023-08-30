@@ -27,7 +27,7 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="member_id")
+    @Column(name= "member_id")
     private Long id;
 
     @Column(name = "email", nullable = false, length = 100)
@@ -36,6 +36,7 @@ public class Member extends BaseEntity {
     @Column(name = "password", length = 100)
     private String password;
 
+    @Column(name = "nickname", unique = true)
     private String nickname;
 
     @OneToMany(mappedBy = "member")
@@ -91,11 +92,31 @@ public class Member extends BaseEntity {
         this.status = status;
     }
 
-    public Member(String email, MemberPlatform platform, String platformId) {
+    public Member(String email, String password, String nickname, MemberProfileImage memberProfileImage,
+                  MemberPlatform platform, String platformId) {
+        validateNickname(nickname);
         this.email = email;
-        this.status = MemberStatus.MEMBER_ACTIVE;
+        this.password = password;
+        this.nickname = nickname;
+        this.memberProfileImage = memberProfileImage;
         this.platform = platform;
         this.platformId = platformId;
+        this.role = MemberRole.USER;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+    }
+
+    public Member(String email, MemberPlatform platform, String platformId) {
+        this.email = email;
+        this.platform = platform;
+        this.platformId = platformId;
+        this.status = MemberStatus.MEMBER_ACTIVE;
+    }
+
+    public Member(String email, MemberPlatform platform, String platformId, MemberStatus status) {
+        this.email = email;
+        this.platform = platform;
+        this.platformId = platformId;
+        this.status = status;
     }
 
     public void registerOAuthMember(String email, String nickname) {
@@ -139,5 +160,9 @@ public class Member extends BaseEntity {
 
     public String getImgUrl() {
         return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
+    }
+
+    public boolean isRegisteredOAuthMember() {
+        return nickname != null;
     }
 }
