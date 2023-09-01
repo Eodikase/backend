@@ -1,6 +1,8 @@
 package com.konkuk.Eodikase.domain.auth.controller;
 
 import com.konkuk.Eodikase.domain.auth.dto.request.AuthLoginRequest;
+import com.konkuk.Eodikase.domain.auth.dto.request.KakaoLoginRequest;
+import com.konkuk.Eodikase.domain.auth.dto.response.OAuthTokenResponse;
 import com.konkuk.Eodikase.domain.auth.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +28,13 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid AuthLoginRequest request) {
         TokenResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "카카오 OAuth 로그인")
+    @PostMapping("/kakao")
+    public ResponseEntity<OAuthTokenResponse> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
+        OAuthTokenResponse response = authService.kakaoOAuthLogin(request);
         return ResponseEntity.ok(response);
     }
 }
