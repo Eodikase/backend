@@ -9,6 +9,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface KakaoUserClient {
 
     @GetMapping
-    KakaoUser getUser(@SpringQueryMap KakaoUserRequest request,
-                      @RequestHeader(name = "Authorization") String authorization);
+    KakaoUser getUser(@SpringQueryMap KakaoUserRequest request, @RequestHeader(name = "Authorization") String token);
 }
