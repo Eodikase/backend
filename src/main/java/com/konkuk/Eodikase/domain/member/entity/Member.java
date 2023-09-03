@@ -6,7 +6,6 @@ import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.review.entity.Review;
 import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
-import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -109,6 +108,7 @@ public class Member extends BaseEntity {
         this.email = email;
         this.platform = platform;
         this.platformId = platformId;
+        this.role = MemberRole.USER;
         this.status = MemberStatus.MEMBER_ACTIVE;
     }
 
@@ -116,6 +116,7 @@ public class Member extends BaseEntity {
         this.email = email;
         this.platform = platform;
         this.platformId = platformId;
+        this.role = MemberRole.USER;
         this.status = status;
     }
 

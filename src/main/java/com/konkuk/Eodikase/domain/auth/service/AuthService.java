@@ -56,7 +56,7 @@ public class AuthService {
 
     public OAuthTokenResponse kakaoOAuthLogin(KakaoLoginRequest request) {
         OAuthPlatformMemberResponse kakaoPlatformMember =
-                kakaoOAuthUserProvider.getKakaoPlatformMember(request.getCode());
+                kakaoOAuthUserProvider.getKakaoPlatformMember(request.getToken());
         return generateOAuthTokenResponse(
                 MemberPlatform.KAKAO,
                 kakaoPlatformMember.getEmail(),
