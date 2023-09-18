@@ -30,6 +30,7 @@ dependencies {
 	implementation 'com.slack.api:slack-api-client:1.29.0'
 	implementation platform("org.springframework.cloud:spring-cloud-dependencies:2021.0.5")
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.15.Final'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
