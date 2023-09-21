@@ -36,5 +36,11 @@ public abstract class BaseCourseEntity {
 
     private String img3;
 
+    private double lat;
+
+    private double lng;
+
+    private String addr;
+
     private Point point;
 }
