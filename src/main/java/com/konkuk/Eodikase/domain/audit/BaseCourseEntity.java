@@ -1,6 +1,8 @@
 package com.konkuk.Eodikase.domain.audit;
 
 import lombok.Getter;
+
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -34,4 +36,11 @@ public abstract class BaseCourseEntity {
 
     private String img3;
 
+    private double lat;
+
+    private double lng;
+
+    private String addr;
+
+    private Point point;
 }
