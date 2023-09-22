@@ -20,9 +20,9 @@ public class CourseDataController {
     @Operation(summary = "타입별 코스 아이템 조회")
     @GetMapping
     public ResponseEntity<GetFilteredCourseDataResponse> getFilteredCourseData(
-            @RequestParam String region, @RequestParam String types, @RequestParam String order
+            @RequestParam String region, @RequestParam String category, @RequestParam String order
     ) {
-        GetFilteredCourseDataResponse response = courseDataService.filtersCourseDataByType(region, types, order);
+        GetFilteredCourseDataResponse response = courseDataService.filtersCourseDataByType(region, category, order);
         return ResponseEntity.ok(response);
     }
 }
