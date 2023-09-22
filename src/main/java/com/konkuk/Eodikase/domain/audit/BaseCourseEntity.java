@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class BaseCourseEntity {
+
     private String name;
 
     private String category;
