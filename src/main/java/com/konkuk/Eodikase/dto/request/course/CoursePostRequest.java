@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.course.dto.request;
+package com.konkuk.Eodikase.dto.request.course;
 
 import lombok.Data;
 import lombok.Getter;

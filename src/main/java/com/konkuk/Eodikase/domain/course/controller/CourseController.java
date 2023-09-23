@@ -1,13 +1,10 @@
 package com.konkuk.Eodikase.domain.course.controller;
 
-import com.konkuk.Eodikase.domain.course.dto.request.CourseDataPostRequest;
-import com.konkuk.Eodikase.domain.course.dto.request.CoursePostRequest;
-import com.konkuk.Eodikase.domain.course.entity.Course;
+import com.konkuk.Eodikase.dto.request.course.CourseDataPostRequest;
+import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.service.CourseService;
 import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
 import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
-import com.konkuk.Eodikase.domain.member.entity.Member;
-import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

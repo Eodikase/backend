@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.dto.response;
+package com.konkuk.Eodikase.dto.response.data;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class FilteredCourseDataByRadiusResponse {
+public class FilteredCourseDataByRegionAndTypeResponse {
 
     private Long id;
 
@@ -30,7 +30,7 @@ public class FilteredCourseDataByRadiusResponse {
 
     private double lng;
 
-    public FilteredCourseDataByRadiusResponse(
+    public FilteredCourseDataByRegionAndTypeResponse(
             Long id, String name, String category, String location, String phoneNumber, Float scoreByNaver,
             String operatingTime, int reviewCount, String imageUrl, double lat, double lng
     ) {

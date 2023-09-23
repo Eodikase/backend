@@ -1,7 +1,7 @@
 package com.konkuk.Eodikase.domain.course.service;
 
-import com.konkuk.Eodikase.domain.course.dto.request.CourseDataPostRequest;
-import com.konkuk.Eodikase.domain.course.dto.request.CoursePostRequest;
+import com.konkuk.Eodikase.dto.request.course.CourseDataPostRequest;
+import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.course.entity.CourseCourseDataRel;
 import com.konkuk.Eodikase.domain.course.repository.CourseCourseDataRelRepository;
@@ -11,13 +11,10 @@ import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
-import com.konkuk.Eodikase.exception.notfound.NotFoundCourseDataException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundCourseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

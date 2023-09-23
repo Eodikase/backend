@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.dto.request;
+package com.konkuk.Eodikase.dto.request.member;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class KakaoLoginRequest {
+public class MemberProfileUpdateRequest {
 
-    @NotBlank(message = "1012:공백일 수 없습니다.")
-    private String token;
+    @NotBlank(message = "1005:공백일 수 없습니다.")
+    private String nickname;
 }

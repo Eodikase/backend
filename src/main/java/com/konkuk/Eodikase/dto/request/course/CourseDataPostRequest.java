@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.course.dto.request;
+package com.konkuk.Eodikase.dto.request.course;
 
 import com.konkuk.Eodikase.domain.data.entity.CourseDataCategory;
 import lombok.Data;

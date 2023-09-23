@@ -1,7 +1,7 @@
 package com.konkuk.Eodikase.domain.member.controller;
 
 import com.konkuk.Eodikase.domain.member.service.MemberService;
-import com.konkuk.Eodikase.dto.request.*;
+import com.konkuk.Eodikase.dto.request.member.*;
 import com.konkuk.Eodikase.dto.response.*;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;

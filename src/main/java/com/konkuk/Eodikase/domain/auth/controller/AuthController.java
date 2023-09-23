@@ -1,8 +1,8 @@
 package com.konkuk.Eodikase.domain.auth.controller;
 
 import com.konkuk.Eodikase.domain.auth.service.AuthService;
-import com.konkuk.Eodikase.dto.request.AuthLoginRequest;
-import com.konkuk.Eodikase.dto.request.KakaoLoginRequest;
+import com.konkuk.Eodikase.dto.request.member.AuthLoginRequest;
+import com.konkuk.Eodikase.dto.request.member.KakaoLoginRequest;
 import com.konkuk.Eodikase.dto.response.OAuthTokenResponse;
 import com.konkuk.Eodikase.dto.response.Response;
 import com.konkuk.Eodikase.dto.response.TokenResponse;
