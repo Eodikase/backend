@@ -3,7 +3,6 @@ package com.konkuk.Eodikase.domain.data.entity;
 import com.konkuk.Eodikase.domain.audit.BaseCourseEntity;
 import com.konkuk.Eodikase.domain.course.entity.CourseCourseDataRel;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class CourseDataSBG  extends BaseCourseEntity {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private CourseDataCategory CourseDataCategory;
+    private CourseDataCategory courseDataCategory;
 
     @OneToMany(mappedBy = "courseDataSBG")
     private List<CourseCourseDataRel> courseDataList = new ArrayList<>();

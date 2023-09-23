@@ -21,6 +21,7 @@ public class AuthConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/v1/members/**")
+                .addPathPatterns("/v1/courseDatas/**")
                 .excludePathPatterns("/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs", "/error")
                 .excludePathPatterns("/v1/members", "/v1/members/oauth", "/v1/members/check-duplicate/**");
     }
