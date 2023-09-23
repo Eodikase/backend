@@ -20,10 +20,10 @@ public class CourseDataController {
 
     @Operation(summary = "타입별 코스 아이템 조회")
     @SecurityRequirement(name = "JWT")
-    @GetMapping
+    @GetMapping("/{region}/items")
     public ResponseEntity<FilteredCourseDataResponse> getFilteredCourseData(
             @LoginUserId Long memberId,
-            @RequestParam String region,
+            @PathVariable String region,
             @RequestParam String type,
             @RequestParam int stage,
             @RequestParam int order,
@@ -38,12 +38,13 @@ public class CourseDataController {
 
     @Operation(summary = "특정 코스 아이템 상세정보 조회")
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/v1/courseDatas/{dataId}")
-    public ResponseEntity<CourseDataDetailInfoResponse> getCourseDataDetail(
+    @GetMapping("/{region}/items/{dataId}")
+    public ResponseEntity<CourseDataDetailInfoResponse> getCourseDataDetailInfo(
             @LoginUserId Long memberId,
+            @PathVariable String region,
             @PathVariable Long dataId
     ) {
-        CourseDataDetailInfoResponse response = courseDataService.searchCourseDataDetail(memberId, dataId);
+        CourseDataDetailInfoResponse response = courseDataService.searchCourseDataDetailInfo(memberId, region, dataId);
         return ResponseEntity.ok(response);
     }
 }

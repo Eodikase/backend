@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.data.service;
 
 import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
+import com.konkuk.Eodikase.domain.data.dto.response.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataByRadiusResponse;
 import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataByRegionAndTypeResponse;
 import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
@@ -9,6 +10,7 @@ import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
+import com.konkuk.Eodikase.exception.notfound.NotFoundCourseDataException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -213,5 +215,68 @@ public class CourseDataService {
         List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(startIndex, endIndex);
 
         return new FilteredCourseDataResponse(type, paginatedData);
+    }
+
+    public CourseDataDetailInfoResponse searchCourseDataDetailInfo(Long memberId, String region, Long dataId) {
+        memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        if (region.equals("EM")) {
+            CourseDataEM findData = courseDataEMRepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        } else if (region.equals("HI")) {
+            CourseDataHI findData = courseDataHIRepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        } else if (region.equals("HSE")) {
+            CourseDataHSE findData = courseDataHSERepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        } else if (region.equals("KSS")) {
+            CourseDataKSS findData = courseDataKSSRepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        } else if (region.equals("NS")) {
+            CourseDataNS findData = courseDataNSRepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        } else if (region.equals("SBG")) {
+            CourseDataSBG findData = courseDataSBGRepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        } else if (region.equals("SHR")) {
+            CourseDataSH findData = courseDataSHRepository.findById(dataId)
+                    .orElseThrow(NotFoundCourseDataException::new);
+            return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
+                    findData.getCategory(), findData.getLocation(), findData.getPhoneNumber(),
+                    findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
+                    findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
+                    findData.getImg3(), findData.getLat(), findData.getLng());
+        }
+        throw new InvalidRegionException();
     }
 }
