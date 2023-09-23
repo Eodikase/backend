@@ -19,17 +19,19 @@ public class CourseDataController {
 
     @Operation(summary = "타입별 코스 아이템 조회")
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/first")
+    @GetMapping
     public ResponseEntity<FilteredCourseDataResponse> getFilteredCourseData(
             @LoginUserId Long memberId,
             @RequestParam String region,
             @RequestParam String type,
             @RequestParam int stage,
             @RequestParam int order,
+            @RequestParam("page") final Integer page,
+            @RequestParam("count") final int count,
             @RequestBody FilteredCourseDataRequest request
     ) {
         FilteredCourseDataResponse response = courseDataService.filtersCourseData(
-                memberId, region, type, stage, order, request);
+                memberId, region, type, stage, order, request, page, count);
         return ResponseEntity.ok(response);
     }
 }

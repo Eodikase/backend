@@ -11,6 +11,7 @@ import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,8 @@ public class CourseDataService {
 
     // 첫 번째 코스 아이템 조회
     public FilteredCourseDataResponse filtersCourseData(
-            Long memberId, String region, String type, int stage, int order, FilteredCourseDataRequest request
+            Long memberId, String region, String type, int stage, int order, FilteredCourseDataRequest request,
+            int page, int count
     ) {
         memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -48,13 +50,13 @@ public class CourseDataService {
         List<FilteredCourseDataByRadiusResponse> filteredDataByRadius =
                 filtersCourseDataByRadius(filteredDataByRegionAndType, mapX, mapY, stage);
 
-        // 순서 필터링 (첫 번째 순서인 경우에만 별점순)
-        if (order == 1) {
-            return filtersCourseDataByOrder(filteredDataByRadius, type);
-
-        } else if (order <= 10) {
-            //return filtersCourseDataByOrderAndDistance(filteredDataByRadius, type);
+        // 순서 필터링
+        if (order == 1) { // 첫 번째 순서인 경우에만 별점순
+            return filtersCourseDataByScore(filteredDataByRadius, type, page, count);
+        } else if (2 <= order && order <= 10) { // 두 번째 순서 이상부터는 거리 고려 -> 별점순
+            return filtersCourseDataByDistanceAndScore(filteredDataByRadius, type, mapX, mapY, page, count);
         }
+
         throw new InvalidDataOrderException();
     }
 
@@ -176,23 +178,40 @@ public class CourseDataService {
         return filteredDataByRadius;
     }
 
-    private FilteredCourseDataResponse filtersCourseDataByOrder(
-            List<FilteredCourseDataByRadiusResponse> filteredDataList, String type) {
-        // 별점 높은 순으로 리턴
-        filteredDataList.sort(Comparator.comparing(FilteredCourseDataByRadiusResponse::getScoreByNaver)
-                .reversed());
-        int maxCount = 7;
-        List<FilteredCourseDataByRadiusResponse> top7Data = new ArrayList<>();
-        if (filteredDataList.size() <= maxCount) {
-            top7Data.addAll(filteredDataList);
-        } else {
-            top7Data.addAll(filteredDataList.subList(0, maxCount));
-        }
+    private FilteredCourseDataResponse filtersCourseDataByScore(
+            List<FilteredCourseDataByRadiusResponse> filteredDataList, String type, int page, int count) {
+        filteredDataList.sort(Comparator.comparing(FilteredCourseDataByRadiusResponse::getScoreByNaver).reversed());
+        PageRequest pageRequest = PageRequest.of(page, count);
+        int startIndex = (int) pageRequest.getOffset();
+        int endIndex = startIndex + pageRequest.getPageSize();
 
-        return new FilteredCourseDataResponse(type, top7Data);
+        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataList.subList(startIndex, endIndex);
+
+        return new FilteredCourseDataResponse(type, paginatedData);
     }
 
-//    private FilteredCourseDataResponse filtersCourseDataByOrderAndDistance(List<FilteredCourseDataByRadiusResponse> filteredDataByRadius, String type) {
-//
-//    }
+    private FilteredCourseDataResponse filtersCourseDataByDistanceAndScore(
+            List<FilteredCourseDataByRadiusResponse> filteredDataByRadius, String type,
+            double mapX, double mapY, int page, int count) {
+
+        Comparator<FilteredCourseDataByRadiusResponse> distanceAndScoreComparator = (data1, data2) -> {
+            double distance1 = haversine(mapX, mapY, data1.getLat(), data1.getLng());
+            double distance2 = haversine(mapX, mapY, data2.getLat(), data2.getLng());
+
+            // 거리 오름차순으로 정렬, 거리가 같다면 별점 내림차순으로 정렬
+            if (distance1 != distance2) {
+                return Double.compare(distance1, distance2);
+            } else {
+                return Double.compare(data2.getScoreByNaver(), data1.getScoreByNaver());
+            }
+        };
+        filteredDataByRadius.sort(distanceAndScoreComparator);
+        PageRequest pageRequest = PageRequest.of(page, count);
+        int startIndex = (int) pageRequest.getOffset();
+        int endIndex = startIndex + pageRequest.getPageSize();
+
+        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(startIndex, endIndex);
+
+        return new FilteredCourseDataResponse(type, paginatedData);
+    }
 }
