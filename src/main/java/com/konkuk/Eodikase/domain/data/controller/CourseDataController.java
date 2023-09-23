@@ -6,11 +6,11 @@ import com.konkuk.Eodikase.dto.request.FilteredCourseDataRequest;
 import com.konkuk.Eodikase.dto.response.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.dto.response.FilteredCourseDataCountResponse;
 import com.konkuk.Eodikase.dto.response.FilteredCourseDataResponse;
+import com.konkuk.Eodikase.dto.response.Response;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +23,7 @@ public class CourseDataController {
     @Operation(summary = "타입별 코스 아이템 조회")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/{region}/items")
-    public ResponseEntity<FilteredCourseDataResponse> getFilteredCourseData(
+    public Response<?> getFilteredCourseData(
             @LoginUserId Long memberId,
             @PathVariable String region,
             @RequestParam String type,
@@ -35,31 +35,31 @@ public class CourseDataController {
     ) {
         FilteredCourseDataResponse response = courseDataService.filtersCourseData(
                 memberId, region, type, stage, order, request, page, count);
-        return ResponseEntity.ok(response);
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "특정 코스 아이템 상세정보 조회")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/{region}/items/{dataId}")
-    public ResponseEntity<CourseDataDetailInfoResponse> getCourseDataDetailInfo(
+    public Response<?> getCourseDataDetailInfo(
             @LoginUserId Long memberId,
             @PathVariable String region,
             @PathVariable Long dataId
     ) {
         CourseDataDetailInfoResponse response = courseDataService.searchCourseDataDetailInfo(memberId, region, dataId);
-        return ResponseEntity.ok(response);
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "특정 반경 내의 코스 아이템 개수 조회")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/{region}/items/count")
-    public ResponseEntity<FilteredCourseDataCountResponse> getCourseDataCountByRadius(
+    public Response<?> getCourseDataCountByRadius(
             @LoginUserId Long memberId,
             @PathVariable String region,
             @RequestBody FilteredCourseDataCountRequest request
     ) {
         FilteredCourseDataCountResponse response = courseDataService.filterCourseDataCountByRadius(
                 memberId, region, request);
-        return ResponseEntity.ok(response);
+        return Response.ofSuccess("OK", response);
     }
 }

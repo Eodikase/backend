@@ -1,14 +1,14 @@
 package com.konkuk.Eodikase.domain.auth.controller;
 
+import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import com.konkuk.Eodikase.dto.request.AuthLoginRequest;
 import com.konkuk.Eodikase.dto.request.KakaoLoginRequest;
 import com.konkuk.Eodikase.dto.response.OAuthTokenResponse;
+import com.konkuk.Eodikase.dto.response.Response;
 import com.konkuk.Eodikase.dto.response.TokenResponse;
-import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,15 +26,15 @@ public class AuthController {
 
     @Operation(summary = "이메일 로그인")
     @PostMapping
-    public ResponseEntity<TokenResponse> login(@RequestBody @Valid AuthLoginRequest request) {
+    public Response<?> login(@RequestBody @Valid AuthLoginRequest request) {
         TokenResponse response = authService.login(request);
-        return ResponseEntity.ok(response);
+        return Response.ofSuccess("OK", response.getToken());
     }
 
     @Operation(summary = "카카오 OAuth 로그인")
     @PostMapping("/kakao")
-    public ResponseEntity<OAuthTokenResponse> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
+    public Response<?> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
         OAuthTokenResponse response = authService.kakaoOAuthLogin(request);
-        return ResponseEntity.ok(response);
+        return Response.ofSuccess("OK", response.getToken());
     }
 }
