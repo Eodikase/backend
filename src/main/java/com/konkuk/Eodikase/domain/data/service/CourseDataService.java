@@ -5,8 +5,6 @@ import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.dto.request.FilteredCourseDataCountRequest;
 import com.konkuk.Eodikase.dto.request.FilteredCourseDataRequest;
 import com.konkuk.Eodikase.dto.response.*;
-import com.konkuk.Eodikase.dto.response.data.entity.*;
-import com.konkuk.Eodikase.dto.response.data.repository.*;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
