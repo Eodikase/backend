@@ -1,19 +1,18 @@
 package com.konkuk.Eodikase.domain.data.service;
 
+import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataCountRequest;
 import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
-import com.konkuk.Eodikase.domain.data.dto.response.CourseDataDetailInfoResponse;
-import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataByRadiusResponse;
-import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataByRegionAndTypeResponse;
-import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
+import com.konkuk.Eodikase.domain.data.dto.response.*;
 import com.konkuk.Eodikase.domain.data.entity.*;
 import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
+import com.konkuk.Eodikase.exception.badrequest.InvalidStageException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundCourseDataException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,13 +35,15 @@ public class CourseDataService {
     private final CourseDataSBGRepository courseDataSBGRepository;
     private final CourseDataSHRepository courseDataSHRepository;
 
-    // 첫 번째 코스 아이템 조회
     public FilteredCourseDataResponse filtersCourseData(
             Long memberId, String region, String type, int stage, int order, FilteredCourseDataRequest request,
             int page, int count
     ) {
         memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
+        if (stage < 1 || stage > 4) {
+            throw new InvalidStageException();
+        }
         // 지역, 타입 필터링
         List<FilteredCourseDataByRegionAndTypeResponse> filteredDataByRegionAndType =
                 filtersCourseDataByRegionAndType(region, type);
@@ -138,26 +140,29 @@ public class CourseDataService {
     }
 
     private double haversine(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // 지구의 반지름 (km)
+        double distance;
+        double radius = 6371; // 지구 반지름(km)
+        double toRadian = Math.PI / 180;
 
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
+        double deltaLatitude = Math.abs(lat1 - lat2) * toRadian;
+        double deltaLongitude = Math.abs(lon1 - lon2) * toRadian;
 
-        lat1 = Math.toRadians(lat1);
-        lat2 = Math.toRadians(lat2);
+        double sinDeltaLat = Math.sin(deltaLatitude / 2);
+        double sinDeltaLng = Math.sin(deltaLongitude / 2);
+        double squareRoot = Math.sqrt(
+                sinDeltaLat * sinDeltaLat +
+                        Math.cos(lat1 * toRadian) * Math.cos(lat2 * toRadian) * sinDeltaLng * sinDeltaLng);
 
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        distance = 2 * radius * Math.asin(squareRoot);
 
-        return R * c; // 두 지점 사이의 거리 (km)
+        return distance * 1000; // km단위 * 1000 -> m
     }
 
     private List<FilteredCourseDataByRadiusResponse> filtersCourseDataByRadius(
             List<FilteredCourseDataByRegionAndTypeResponse> filteredDataByRegionAndType,
             double mapX, double mapY, int stage
     ) {
-        int radius = 350 * stage;
+        int radius = 350 * stage; // m
         List<FilteredCourseDataByRadiusResponse> filteredDataByRadius = new ArrayList<>();
 
         for (FilteredCourseDataByRegionAndTypeResponse data : filteredDataByRegionAndType) {
@@ -183,11 +188,8 @@ public class CourseDataService {
     private FilteredCourseDataResponse filtersCourseDataByScore(
             List<FilteredCourseDataByRadiusResponse> filteredDataList, String type, int page, int count) {
         filteredDataList.sort(Comparator.comparing(FilteredCourseDataByRadiusResponse::getScoreByNaver).reversed());
-        PageRequest pageRequest = PageRequest.of(page, count);
-        int startIndex = (int) pageRequest.getOffset();
-        int endIndex = startIndex + pageRequest.getPageSize();
-
-        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataList.subList(startIndex, endIndex);
+        int endIndex = Math.min(filteredDataList.size(), page * count + count);
+        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataList.subList(page * count, endIndex);
 
         return new FilteredCourseDataResponse(type, paginatedData);
     }
@@ -208,11 +210,9 @@ public class CourseDataService {
             }
         };
         filteredDataByRadius.sort(distanceAndScoreComparator);
-        PageRequest pageRequest = PageRequest.of(page, count);
-        int startIndex = (int) pageRequest.getOffset();
-        int endIndex = startIndex + pageRequest.getPageSize();
 
-        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(startIndex, endIndex);
+        int endIndex = Math.min(filteredDataByRadius.size(), page * count + count);
+        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(page * count, endIndex);
 
         return new FilteredCourseDataResponse(type, paginatedData);
     }
@@ -268,7 +268,7 @@ public class CourseDataService {
                     findData.getScoreByNaver(), findData.getHref(), findData.getOperatingTime(),
                     findData.getReviewCount(), findData.getImageUrl(), findData.getImg1(), findData.getImg2(),
                     findData.getImg3(), findData.getLat(), findData.getLng());
-        } else if (region.equals("SHR")) {
+        } else if (region.equals("SH")) {
             CourseDataSH findData = courseDataSHRepository.findById(dataId)
                     .orElseThrow(NotFoundCourseDataException::new);
             return new CourseDataDetailInfoResponse(findData.getId(), findData.getName(),
@@ -278,5 +278,119 @@ public class CourseDataService {
                     findData.getImg3(), findData.getLat(), findData.getLng());
         }
         throw new InvalidRegionException();
+    }
+
+    public FilteredCourseDataCountResponse filterCourseDataCountByRadius(Long memberId, String region,
+                                                                         FilteredCourseDataCountRequest request) {
+        memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        double mapX = request.getLat();
+        double mapY = request.getLng();
+        List<FindAllCourseDataResponse> courseDataList = new ArrayList<>();
+
+        if (region.equals("EM")) {
+            List<CourseDataEM> allDatas = courseDataEMRepository.findAll();
+            for (CourseDataEM data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else if (region.equals("HI")) {
+            List<CourseDataHI> allDatas = courseDataHIRepository.findAll();
+            for (CourseDataHI data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else if (region.equals("HSE")) {
+            List<CourseDataHSE> allDatas = courseDataHSERepository.findAll();
+            for (CourseDataHSE data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else if (region.equals("KSS")) {
+            List<CourseDataKSS> allDatas = courseDataKSSRepository.findAll();
+            for (CourseDataKSS data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else if (region.equals("NS")) {
+            List<CourseDataNS> allDatas = courseDataNSRepository.findAll();
+            for (CourseDataNS data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else if (region.equals("SBG")) {
+            List<CourseDataSBG> allDatas = courseDataSBGRepository.findAll();
+            for (CourseDataSBG data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else if (region.equals("SH")) {
+            List<CourseDataSH> allDatas = courseDataSHRepository.findAll();
+            for (CourseDataSH data : allDatas) {
+                FindAllCourseDataResponse response
+                        = new FindAllCourseDataResponse(data.getId(), data.getLat(), data.getLng());
+                courseDataList.add(response);
+            }
+        } else {
+            throw new InvalidRegionException();
+        }
+
+        return countDataInRadius(courseDataList, mapX, mapY);
+    }
+
+    private FilteredCourseDataCountResponse countDataInRadius(List<FindAllCourseDataResponse> dataList,
+                                  double mapX, double mapY) {
+        int radius = 350;
+        int stage1 = 0;
+        int stage2 = 0;
+        int stage3 = 0;
+        int stage4 = 0;
+
+        for (FindAllCourseDataResponse data : dataList) {
+            double dataLat = data.getLat();
+            double dataLng = data.getLng();
+            double distance = haversine(mapX, mapY, dataLat, dataLng);
+            // 거리가 반경 내에 있는 경우, 매장 개수 증가
+            if (distance <= radius) {
+                stage1++;
+            }
+        }
+
+        for (FindAllCourseDataResponse data : dataList) {
+            double dataLat = data.getLat();
+            double dataLng = data.getLng();
+            double distance = haversine(mapX, mapY, dataLat, dataLng);
+            // 거리가 반경 내에 있는 경우, 매장 개수 증가
+            if (distance <= radius*2) {
+                stage2++;
+            }
+        }
+
+        for (FindAllCourseDataResponse data : dataList) {
+            double dataLat = data.getLat();
+            double dataLng = data.getLng();
+            double distance = haversine(mapX, mapY, dataLat, dataLng);
+            // 거리가 반경 내에 있는 경우, 매장 개수 증가
+            if (distance <= radius*3) {
+                stage3++;
+            }
+        }
+
+        for (FindAllCourseDataResponse data : dataList) {
+            double dataLat = data.getLat();
+            double dataLng = data.getLng();
+            double distance = haversine(mapX, mapY, dataLat, dataLng);
+            // 거리가 반경 내에 있는 경우, 매장 개수 증가
+            if (distance <= radius*4) {
+                stage4++;
+            }
+        }
+        return new FilteredCourseDataCountResponse(stage1, stage2, stage3, stage4); // 반경 내의 매장 개수를 반환
     }
 }

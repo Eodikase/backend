@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.data.controller;
 
+import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataCountRequest;
 import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
 import com.konkuk.Eodikase.domain.data.dto.response.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataCountResponse;
@@ -51,14 +52,14 @@ public class CourseDataController {
 
     @Operation(summary = "특정 반경 내의 코스 아이템 개수 조회")
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/{region}/items")
+    @GetMapping("/{region}/items/count")
     public ResponseEntity<FilteredCourseDataCountResponse> getCourseDataCountByRadius(
             @LoginUserId Long memberId,
             @PathVariable String region,
-            @RequestParam int stage
+            @RequestBody FilteredCourseDataCountRequest request
     ) {
         FilteredCourseDataCountResponse response = courseDataService.filterCourseDataCountByRadius(
-                memberId, region, stage);
+                memberId, region, request);
         return ResponseEntity.ok(response);
     }
 }
