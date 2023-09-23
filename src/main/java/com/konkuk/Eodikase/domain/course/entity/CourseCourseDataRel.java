@@ -1,13 +1,17 @@
 package com.konkuk.Eodikase.domain.course.entity;
 
 import com.konkuk.Eodikase.domain.data.entity.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Table(name = "course_course_data_rel")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourseCourseDataRel {
 
     @Id
@@ -47,4 +51,23 @@ public class CourseCourseDataRel {
     @JoinColumn(name = "course_data_sh_id")
     private CourseDataSH courseDataSH;
 
+    private int order;
+
+    @Builder
+    public CourseCourseDataRel(CourseDataEM courseDataEM, CourseDataHI courseDataHI, CourseDataHSE courseDataHSE,
+                               CourseDataKSS courseDataKSS, CourseDataNS courseDataNS,CourseDataSBG courseDataSBG, CourseDataSH courseDataSH, int order )
+    {
+        this.courseDataEM = courseDataEM;
+        this.courseDataHI = courseDataHI;
+        this.courseDataHSE = courseDataHSE;
+        this.courseDataKSS = courseDataKSS;
+        this.courseDataNS = courseDataNS;
+        this.courseDataSBG = courseDataSBG;
+        this.courseDataSH = courseDataSH;
+        this.order = order;
+    }
+    public void assignCourse(Course course){
+        this.course = course;
+        course.getCourseDataRelList().add(this);
+    }
 }

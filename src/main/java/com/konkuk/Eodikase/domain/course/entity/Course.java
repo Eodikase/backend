@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +48,24 @@ public class Course extends BaseEntity {
     private List<CourseHashtagRel> hashtagList = new ArrayList<>();
 
     @OneToMany(mappedBy = "course")
-    private List<CourseCourseDataRel> courseDataList = new ArrayList<>();
+    private List<CourseCourseDataRel> courseDataRelList = new ArrayList<>();
 
     public void assignMember(Member member){
         this.member = member;
         member.getCourseList().add(this);
     }
 
+    public void addCourseDataList(CourseCourseDataRel courseDataRel){
+        this.courseDataRelList.add(courseDataRel);
+        courseDataRel.assignCourse(this);
+    }
+
+    public static Course createCourse(Member member, CourseCourseDataRel... courseDataRelList) {
+        Course course = new Course();
+        course.assignMember(member);
+        for (CourseCourseDataRel courseDataRel : courseDataRelList) {
+            course.addCourseDataList(courseDataRel);
+        }
+        return course;
+    }
 }
