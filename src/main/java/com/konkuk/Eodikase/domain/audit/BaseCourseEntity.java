@@ -12,6 +12,7 @@ import javax.persistence.*;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseCourseEntity {
+
     private String name;
 
     private String category;

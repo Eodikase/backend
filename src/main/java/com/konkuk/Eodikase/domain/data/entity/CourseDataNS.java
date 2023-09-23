@@ -17,7 +17,7 @@ public class CourseDataNS  extends BaseCourseEntity {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private CourseDataCategory CourseDataCategory;
+    private CourseDataCategory courseDataCategory;
 
     @OneToMany(mappedBy = "courseDataNS")
     private List<CourseCourseDataRel> courseDataList = new ArrayList<>();
