@@ -7,6 +7,7 @@ import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.domain.data.entity.*;
 import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
+import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,8 @@ public class CourseDataService {
     private final CourseDataSHRepository courseDataSHRepository;
 
     // 첫 번째 코스 아이템 조회
-    public FilteredCourseDataResponse filtersFirstCourseData(
-            Long memberId, String region, String type, int stage, FilteredCourseDataRequest request,
-            Integer page, int count
+    public FilteredCourseDataResponse filtersCourseData(
+            Long memberId, String region, String type, int stage, int order, FilteredCourseDataRequest request
     ) {
         memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -49,7 +49,13 @@ public class CourseDataService {
                 filtersCourseDataByRadius(filteredDataByRegionAndType, mapX, mapY, stage);
 
         // 순서 필터링 (첫 번째 순서인 경우에만 별점순)
-        return filtersCourseDataByOrder(filteredDataByRadius, type, page, count);
+        if (order == 1) {
+            return filtersCourseDataByOrder(filteredDataByRadius, type);
+
+        } else if (order <= 10) {
+            //return filtersCourseDataByOrderAndDistance(filteredDataByRadius, type);
+        }
+        throw new InvalidDataOrderException();
     }
 
     private List<FilteredCourseDataByRegionAndTypeResponse> filtersCourseDataByRegionAndType(String region, String type) {
@@ -171,15 +177,22 @@ public class CourseDataService {
     }
 
     private FilteredCourseDataResponse filtersCourseDataByOrder(
-            List<FilteredCourseDataByRadiusResponse> filteredDataList, String type, int page, int count) {
+            List<FilteredCourseDataByRadiusResponse> filteredDataList, String type) {
         // 별점 높은 순으로 리턴
         filteredDataList.sort(Comparator.comparing(FilteredCourseDataByRadiusResponse::getScoreByNaver)
                 .reversed());
-        int startIndex = page * count;
-        int endIndex = Math.min(startIndex + count, filteredDataList.size());
-        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataList.subList(startIndex, endIndex);
+        int maxCount = 7;
+        List<FilteredCourseDataByRadiusResponse> top7Data = new ArrayList<>();
+        if (filteredDataList.size() <= maxCount) {
+            top7Data.addAll(filteredDataList);
+        } else {
+            top7Data.addAll(filteredDataList.subList(0, maxCount));
+        }
 
-        FilteredCourseDataResponse response = new FilteredCourseDataResponse(type, paginatedData);
-        return response;
+        return new FilteredCourseDataResponse(type, top7Data);
     }
+
+//    private FilteredCourseDataResponse filtersCourseDataByOrderAndDistance(List<FilteredCourseDataByRadiusResponse> filteredDataByRadius, String type) {
+//
+//    }
 }

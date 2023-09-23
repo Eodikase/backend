@@ -25,12 +25,11 @@ public class CourseDataController {
             @RequestParam String region,
             @RequestParam String type,
             @RequestParam int stage,
-            @RequestParam("page") final Integer page,
-            @RequestParam("count") final int count,
+            @RequestParam int order,
             @RequestBody FilteredCourseDataRequest request
     ) {
-        FilteredCourseDataResponse response = courseDataService.filtersFirstCourseData(
-                memberId, region, type, stage, request, page, count);
+        FilteredCourseDataResponse response = courseDataService.filtersCourseData(
+                memberId, region, type, stage, order, request);
         return ResponseEntity.ok(response);
     }
 }
