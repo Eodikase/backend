@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.course.controller;
 
+import com.konkuk.Eodikase.domain.course.dto.request.CourseDataPostRequest;
 import com.konkuk.Eodikase.domain.course.dto.request.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.course.service.CourseService;
@@ -23,17 +24,27 @@ import java.util.Optional;
 public class CourseController {
 
     private final CourseService courseService;
-
-    //order - 코스에서 몇번째 장소인지
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "코스 데이터 삽입")
+    @PostMapping("/{course-id}")
+    public ResponseEntity postCourseData(
+            @LoginUserId Long memberId,
+            @PathVariable("course-id") Long courseId,
+            @RequestBody CourseDataPostRequest request){
+        courseService.saveData(memberId, courseId, request);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "코스 생성")
     @PostMapping
-    public ResponseEntity<Void> saveCourse(
+    public ResponseEntity saveCourse(
            @LoginUserId Long memberId,
            @RequestBody CoursePostRequest request){
 
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        courseService.saveCourse(memberId,request);
+        return new ResponseEntity(HttpStatus.OK);
     }
+
 }
 
 

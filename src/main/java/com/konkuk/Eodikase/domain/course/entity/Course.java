@@ -5,10 +5,7 @@ import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.review.entity.Review;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -50,22 +47,21 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course")
     private List<CourseCourseDataRel> courseDataRelList = new ArrayList<>();
 
+    @Builder
+    public Course(String courseName, String courseDescription){
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+    }
+
+    //==연관관계 메서드(양방향)==//
     public void assignMember(Member member){
         this.member = member;
         member.getCourseList().add(this);
     }
 
-    public void addCourseDataList(CourseCourseDataRel courseDataRel){
+    public void addCourseDataRelList(CourseCourseDataRel courseDataRel){
         this.courseDataRelList.add(courseDataRel);
         courseDataRel.assignCourse(this);
     }
 
-    public static Course createCourse(Member member, CourseCourseDataRel... courseDataRelList) {
-        Course course = new Course();
-        course.assignMember(member);
-        for (CourseCourseDataRel courseDataRel : courseDataRelList) {
-            course.addCourseDataList(courseDataRel);
-        }
-        return course;
-    }
 }
