@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.member.dto.request;
+package com.konkuk.Eodikase.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

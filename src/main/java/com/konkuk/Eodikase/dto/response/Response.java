@@ -1,6 +1,5 @@
-package com.konkuk.Eodikase.domain.member.dto.response;
+package com.konkuk.Eodikase.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

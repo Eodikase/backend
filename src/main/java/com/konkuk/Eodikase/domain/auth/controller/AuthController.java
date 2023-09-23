@@ -1,9 +1,9 @@
 package com.konkuk.Eodikase.domain.auth.controller;
 
-import com.konkuk.Eodikase.domain.auth.dto.request.AuthLoginRequest;
-import com.konkuk.Eodikase.domain.auth.dto.request.KakaoLoginRequest;
-import com.konkuk.Eodikase.domain.auth.dto.response.OAuthTokenResponse;
-import com.konkuk.Eodikase.domain.auth.dto.response.TokenResponse;
+import com.konkuk.Eodikase.dto.request.AuthLoginRequest;
+import com.konkuk.Eodikase.dto.request.KakaoLoginRequest;
+import com.konkuk.Eodikase.dto.response.OAuthTokenResponse;
+import com.konkuk.Eodikase.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

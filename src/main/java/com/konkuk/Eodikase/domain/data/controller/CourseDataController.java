@@ -1,11 +1,11 @@
 package com.konkuk.Eodikase.domain.data.controller;
 
-import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataCountRequest;
-import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
-import com.konkuk.Eodikase.domain.data.dto.response.CourseDataDetailInfoResponse;
-import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataCountResponse;
-import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.domain.data.service.CourseDataService;
+import com.konkuk.Eodikase.dto.request.FilteredCourseDataCountRequest;
+import com.konkuk.Eodikase.dto.request.FilteredCourseDataRequest;
+import com.konkuk.Eodikase.dto.response.CourseDataDetailInfoResponse;
+import com.konkuk.Eodikase.dto.response.FilteredCourseDataCountResponse;
+import com.konkuk.Eodikase.dto.response.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
