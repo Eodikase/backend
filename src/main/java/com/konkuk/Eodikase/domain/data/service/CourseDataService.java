@@ -1,10 +1,10 @@
 package com.konkuk.Eodikase.domain.data.service;
 
-import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataCountRequest;
-import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
-import com.konkuk.Eodikase.domain.data.dto.response.*;
 import com.konkuk.Eodikase.domain.data.entity.*;
 import com.konkuk.Eodikase.domain.data.repository.*;
+import com.konkuk.Eodikase.dto.request.FilteredCourseDataCountRequest;
+import com.konkuk.Eodikase.dto.request.FilteredCourseDataRequest;
+import com.konkuk.Eodikase.dto.response.*;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;

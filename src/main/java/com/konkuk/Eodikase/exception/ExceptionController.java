@@ -40,7 +40,7 @@ public class ExceptionController {
 
     @ExceptionHandler(EodikaseException.class)
     public ResponseEntity<ErrorResponse> handleEodikaseException(EodikaseException e) {
-        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(), e.getMessage()));
+        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(), e.getMessage(), null));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,7 +51,7 @@ public class ExceptionController {
         int code = Integer.parseInt(errorInfo[FIELD_ERROR_CODE_INDEX]);
         String message = errorInfo[FIELD_ERROR_MESSAGE_INDEX];
 
-        return ResponseEntity.badRequest().body(new ErrorResponse(code, message));
+        return ResponseEntity.badRequest().body(new ErrorResponse(code, message, null));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -59,7 +59,7 @@ public class ExceptionController {
         log.warn("Json Exception ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9000, "Json 형식이 올바르지 않습니다."));
+                .body(new ErrorResponse(9000, "Json 형식이 올바르지 않습니다.", null));
     }
 
     @ExceptionHandler(HttpMediaTypeException.class)
@@ -67,7 +67,7 @@ public class ExceptionController {
         log.warn("ContentType Exception ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9001, "ContentType 값이 올바르지 않습니다."));
+                .body(new ErrorResponse(9001, "ContentType 값이 올바르지 않습니다.", null));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -75,7 +75,7 @@ public class ExceptionController {
         log.warn("Http Method not supported Exception ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9002, "해당 Http Method에 맞는 API가 존재하지 않습니다."));
+                .body(new ErrorResponse(9002, "해당 Http Method에 맞는 API가 존재하지 않습니다.", null));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -83,7 +83,7 @@ public class ExceptionController {
         log.warn("Request Param is Missing! ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9003, "요청 param 이름이 올바르지 않습니다."));
+                .body(new ErrorResponse(9003, "요청 param 이름이 올바르지 않습니다.", null));
     }
 
     @ExceptionHandler(Exception.class)
@@ -96,7 +96,7 @@ public class ExceptionController {
         sendSlackAlertErrorLog(e, request);
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse(9999,
-                        "일시적으로 접속이 원활하지 않습니다. 어디카세 서비스 팀에 문의 부탁드립니다."));
+                        "일시적으로 접속이 원활하지 않습니다. 어디카세 서비스 팀에 문의 부탁드립니다.", null));
     }
 
     private void sendSlackAlertErrorLog(Exception e, HttpServletRequest request) {

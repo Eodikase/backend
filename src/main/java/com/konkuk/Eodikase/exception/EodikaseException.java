@@ -9,10 +9,12 @@ public class EodikaseException extends RuntimeException {
     private final HttpStatus httpStatus;
     private final String message;
     private final int code;
+    private final Object data;
 
     public EodikaseException(HttpStatus httpStatus, String message, int code) {
         this.httpStatus = httpStatus;
         this.message = message;
         this.code = code;
+        this.data = null;
     }
 }
