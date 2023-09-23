@@ -32,7 +32,7 @@ public class CourseDataService {
     private final CourseDataSHRepository courseDataSHRepository;
 
     // 첫 번째 코스 아이템 조회
-    public FilteredCourseDataResponse filtersCourseData(
+    public FilteredCourseDataResponse filtersFirstCourseData(
             Long memberId, String region, String type, int stage, FilteredCourseDataRequest request,
             Integer page, int count
     ) {
@@ -49,9 +49,7 @@ public class CourseDataService {
                 filtersCourseDataByRadius(filteredDataByRegionAndType, mapX, mapY, stage);
 
         // 순서 필터링 (첫 번째 순서인 경우에만 별점순)
-        FilteredCourseDataResponse filteredDataByOrder = filtersCourseDataByOrder(
-                filteredDataByRadius, type, page, count);
-        return filteredDataByOrder;
+        return filtersCourseDataByOrder(filteredDataByRadius, type, page, count);
     }
 
     private List<FilteredCourseDataByRegionAndTypeResponse> filtersCourseDataByRegionAndType(String region, String type) {

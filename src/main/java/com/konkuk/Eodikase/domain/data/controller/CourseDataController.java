@@ -29,7 +29,7 @@ public class CourseDataController {
             @RequestParam("count") final int count,
             @RequestBody FilteredCourseDataRequest request
     ) {
-        FilteredCourseDataResponse response = courseDataService.filtersCourseData(
+        FilteredCourseDataResponse response = courseDataService.filtersFirstCourseData(
                 memberId, region, type, stage, request, page, count);
         return ResponseEntity.ok(response);
     }
