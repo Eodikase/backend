@@ -64,77 +64,63 @@ public class CourseDataService {
             // CourseDataEM를 FilteredCourseDataByRegionAndTypeResponse로 변환하여 추가
             for (CourseDataEM data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else if (region.equals("HI")) {
             List<CourseDataHI> filteredByData = courseDataHIRepository.findByCourseDataCategory(category);
             for (CourseDataHI data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else if (region.equals("HSE")) {
             List<CourseDataHSE> filteredByData = courseDataHSERepository.findByCourseDataCategory(category);
             for (CourseDataHSE data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else if (region.equals("KSS")) {
             List<CourseDataKSS> filteredByData= courseDataKSSRepository.findByCourseDataCategory(category);
             for (CourseDataKSS data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else if (region.equals("NS")) {
             List<CourseDataNS> filteredByData= courseDataNSRepository.findByCourseDataCategory(category);
             for (CourseDataNS data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else if (region.equals("SBG")) {
             List<CourseDataSBG> filteredByData= courseDataSBGRepository.findByCourseDataCategory(category);
             for (CourseDataSBG data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else if (region.equals("SH")) {
             List<CourseDataSH> filteredByData= courseDataSHRepository.findByCourseDataCategory(category);
             for (CourseDataSH data : filteredByData) {
                 FilteredCourseDataByRegionAndTypeResponse response
-                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(),
-                        data.getCategory(), data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(),
-                        data.getHref(), data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(),
-                        data.getLat(), data.getLng(), data.getAddr(), data.getPoint());
+                        = new FilteredCourseDataByRegionAndTypeResponse(data.getId(), data.getName(), data.getCategory(),
+                        data.getLocation(), data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(),
+                        data.getReviewCount(), data.getImageUrl(), data.getLat(), data.getLng());
                 filteredDataList.add(response);
             }
         } else {
@@ -177,10 +163,8 @@ public class CourseDataService {
             if (distance <= radius) {
                 FilteredCourseDataByRadiusResponse response = new FilteredCourseDataByRadiusResponse(
                         data.getId(), data.getName(), data.getCategory(), data.getLocation(),
-                        data.getPhoneNumber(), data.getScoreByNaver(), data.getHref(),
-                        data.getOperatingTime(), data.getReviewCount(), data.getImageUrl(),
-                        data.getImg1(), data.getImg2(), data.getImg3(), data.getLat(), data.getLng(),
-                        data.getAddr(), data.getPoint()
+                        data.getPhoneNumber(), data.getScoreByNaver(), data.getOperatingTime(), data.getReviewCount(),
+                        data.getImageUrl(), data.getLat(), data.getLng()
                 );
                 filteredDataByRadius.add(response);
             }
