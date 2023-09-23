@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.data.controller;
 
 import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
+import com.konkuk.Eodikase.domain.data.dto.response.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.domain.data.service.CourseDataService;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
@@ -32,6 +33,17 @@ public class CourseDataController {
     ) {
         FilteredCourseDataResponse response = courseDataService.filtersCourseData(
                 memberId, region, type, stage, order, request, page, count);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "특정 코스 아이템 상세정보 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/v1/courseDatas/{dataId}")
+    public ResponseEntity<CourseDataDetailInfoResponse> getCourseDataDetail(
+            @LoginUserId Long memberId,
+            @PathVariable Long dataId
+    ) {
+        CourseDataDetailInfoResponse response = courseDataService.searchCourseDataDetail(memberId, dataId);
         return ResponseEntity.ok(response);
     }
 }
