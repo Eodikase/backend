@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.data.dto.request;
+package com.konkuk.Eodikase.dto.request;
 
 import lombok.*;
 

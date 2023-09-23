@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.data.dto.response;
+package com.konkuk.Eodikase.dto.response;
 
 import lombok.Getter;
 

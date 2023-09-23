@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.member.dto.response;
+package com.konkuk.Eodikase.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MemberSignUpResponse {
+public class IsDuplicateNicknameResponse {
 
-    private Long id;
+    private boolean result;
 }

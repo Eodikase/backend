@@ -1,9 +1,9 @@
 package com.konkuk.Eodikase.service;
 
-import com.konkuk.Eodikase.domain.auth.dto.request.AuthLoginRequest;
-import com.konkuk.Eodikase.domain.auth.dto.request.KakaoLoginRequest;
-import com.konkuk.Eodikase.domain.auth.dto.response.OAuthTokenResponse;
-import com.konkuk.Eodikase.domain.auth.dto.response.TokenResponse;
+import com.konkuk.Eodikase.dto.request.AuthLoginRequest;
+import com.konkuk.Eodikase.dto.request.KakaoLoginRequest;
+import com.konkuk.Eodikase.dto.response.OAuthTokenResponse;
+import com.konkuk.Eodikase.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.auth.service.AuthService;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
@@ -16,7 +16,6 @@ import com.konkuk.Eodikase.security.auth.kakao.KakaoOAuthUserProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.junit.jupiter.api.BeforeEach;
