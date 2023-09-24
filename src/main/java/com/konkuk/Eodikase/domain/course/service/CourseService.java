@@ -132,5 +132,6 @@ public class CourseService {
     public Page<CourseResponse> getCoursesByRegion(CourseRegion courseRegion, Pageable pageable) {
         Page<CourseResponse> map = courseRepository.findAllByRegion(courseRegion,pageable).map(CourseResponse::new);
         return map;
+
     }
 }
