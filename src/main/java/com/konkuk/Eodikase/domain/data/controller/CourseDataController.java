@@ -7,7 +7,7 @@ import com.konkuk.Eodikase.dto.response.data.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataCountResponse;
 import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.dto.response.Response;
-import com.konkuk.Eodikase.dto.response.data.SearchCourseDataResponse;
+import com.konkuk.Eodikase.dto.response.data.SearchCourseDatasResponse;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -72,7 +72,7 @@ public class CourseDataController {
             @PathVariable String region,
             @RequestParam("keyword") String keyword
     ) {
-        SearchCourseDataResponse response = courseDataService.searchCourseDataByKeyword(memberId, region, keyword);
+        SearchCourseDatasResponse response = courseDataService.searchCourseDataByKeyword(memberId, region, keyword);
         return Response.ofSuccess("OK", response);
     }
 }
