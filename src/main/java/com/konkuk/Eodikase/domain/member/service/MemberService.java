@@ -1,17 +1,17 @@
 package com.konkuk.Eodikase.domain.member.service;
 
-import com.konkuk.Eodikase.dto.request.MemberProfileUpdateRequest;
-import com.konkuk.Eodikase.dto.request.MemberSignUpRequest;
-import com.konkuk.Eodikase.dto.request.ResetPasswordRequest;
-import com.konkuk.Eodikase.dto.request.OAuthMemberSignUpRequest;
-import com.konkuk.Eodikase.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
+import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
+import com.konkuk.Eodikase.dto.request.member.OAuthMemberSignUpRequest;
+import com.konkuk.Eodikase.dto.request.member.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
-import com.konkuk.Eodikase.dto.response.*;
+import com.konkuk.Eodikase.dto.response.member.*;
 import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.support.AwsS3Uploader;
