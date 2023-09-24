@@ -70,9 +70,13 @@ public class CourseDataController {
     public Response<?> getCourseDataCountByRadius(
             @LoginUserId Long memberId,
             @PathVariable String region,
-            @RequestParam("keyword") String keyword
+            @RequestParam("category") String category,
+            @RequestParam("keyword") String keyword,
+            @RequestParam("page") final Integer page,
+            @RequestParam("count") final int count
     ) {
-        SearchCourseDatasResponse response = courseDataService.searchCourseDataByKeyword(memberId, region, keyword);
+        SearchCourseDatasResponse response = courseDataService.searchCourseDataByKeyword(
+                memberId, region, category, keyword, page, count);
         return Response.ofSuccess("OK", response);
     }
 }

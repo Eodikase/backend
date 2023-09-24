@@ -2,17 +2,18 @@ package com.konkuk.Eodikase.domain.data.service;
 
 import com.konkuk.Eodikase.domain.data.entity.*;
 import com.konkuk.Eodikase.domain.data.repository.*;
+import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.dto.request.data.FilteredCourseDataCountRequest;
 import com.konkuk.Eodikase.dto.request.data.FilteredCourseDataRequest;
-import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.dto.response.data.*;
-import com.konkuk.Eodikase.exception.badrequest.InvalidDataOrderException;
-import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
-import com.konkuk.Eodikase.exception.badrequest.InvalidStageException;
+import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundCourseDataException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -392,5 +393,62 @@ public class CourseDataService {
             }
         }
         return new FilteredCourseDataCountResponse(stage1, stage2, stage3, stage4); // 반경 내의 매장 개수를 반환
+    }
+
+    public SearchCourseDatasResponse searchCourseDataByKeyword(Long memberId, String region, String category,
+                                                               String keyword, int page, int count) {
+        memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        if (keyword.isBlank()) {
+            throw new BlankKeywordException();
+        }
+        Pageable pageable = PageRequest.of(page, count);
+        Page<SearchCourseDataResponse> courseDataPage;
+        List<SearchCourseDataResponse> courseDataResponses;
+        CourseDataCategory dataCategory;
+        if (category.equals("RES")) {
+            dataCategory = CourseDataCategory.RES;
+        } else if (category.equals("CAFE")) {
+            dataCategory = CourseDataCategory.CAFE;
+        } else if (category.equals("ACT")) {
+            dataCategory = CourseDataCategory.ACT;
+        } else {
+            throw new InvalidCourseDataCategoryException();
+        }
+
+        if (region.equals("EM")) {
+            courseDataPage = courseDataEMRepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else if (region.equals("HI")) {
+            courseDataPage = courseDataHIRepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else if (region.equals("HSE")) {
+            courseDataPage = courseDataHSERepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else if (region.equals("KSS")) {
+            courseDataPage = courseDataKSSRepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else if (region.equals("NS")) {
+            courseDataPage = courseDataNSRepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else if (region.equals("SBG")) {
+            courseDataPage = courseDataSBGRepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else if (region.equals("SH")) {
+            courseDataPage = courseDataSHRepository
+                    .findByCourseDataCategoryAndNameContaining(dataCategory, keyword, pageable)
+                    .map(data -> new SearchCourseDataResponse(data.getId(), data.getName()));
+        } else {
+            throw new InvalidRegionException();
+        }
+        courseDataResponses = courseDataPage.getContent();
+
+        return new SearchCourseDatasResponse(courseDataResponses);
     }
 }

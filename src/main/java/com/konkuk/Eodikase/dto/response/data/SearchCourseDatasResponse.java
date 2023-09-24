@@ -7,5 +7,9 @@ import java.util.List;
 @Getter
 public class SearchCourseDatasResponse {
 
-    private List<SearchCourseDataResponse> datas;
+    private List<SearchCourseDataResponse> contents;
+
+    public SearchCourseDatasResponse(List<SearchCourseDataResponse> contents) {
+        this.contents = contents;
+    }
 }
