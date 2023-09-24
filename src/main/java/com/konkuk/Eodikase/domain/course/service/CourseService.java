@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.course.service;
 
+import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
 import com.konkuk.Eodikase.dto.request.course.CourseDataPostRequest;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.entity.Course;
@@ -12,6 +13,7 @@ import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.dto.response.course.CourseResponse;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
+import com.konkuk.Eodikase.exception.badrequest.RegionNotMatchException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundCourseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,7 +47,8 @@ public class CourseService {
         Member member = memberRepository.findById(memberId).get();
         Course course = Course.builder()
                         .courseName(request.getCourseName())
-                        .courseDescription(request.getCourseDescription()).build();
+                        .courseDescription(request.getCourseDescription())
+                        .region(request.getCourseRegion()).build();
         course.assignMember(member);
         return courseRepository.save(course).getId();
     }
@@ -53,12 +56,19 @@ public class CourseService {
     public Long saveData(Long memberId, Long courseId, CourseDataPostRequest request) {
         Member member = memberRepository.findById(memberId).get();
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundCourseException::new);
+        CourseRegion region = course.getRegion();
+        String string = course.getRegion().toString();
+        int maxSeq = courseCourseDataRelRepository.findTopByCourseId(courseId).get(0).intValue();
+        if(!course.getRegion().toString().equals(request.getRegion())){
+            throw new RegionNotMatchException();
+        }
+
         CourseCourseDataRel courseCourseDataRel;
         if(request.getRegion().equals("EM")){
             CourseDataEM courseDataEM = courseDataEMRepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataEM(courseDataEM)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -66,7 +76,7 @@ public class CourseService {
             CourseDataHI courseDataHI = courseDataHIRepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataHI(courseDataHI)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -74,7 +84,7 @@ public class CourseService {
             CourseDataHSE courseDataHSE = courseDataHSERepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataHSE(courseDataHSE)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -82,7 +92,7 @@ public class CourseService {
             CourseDataKSS courseDataKSS = courseDataKSSRepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataKSS(courseDataKSS)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -90,7 +100,7 @@ public class CourseService {
             CourseDataNS courseDataNS = courseDataNSRepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataNS(courseDataNS)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -98,7 +108,7 @@ public class CourseService {
             CourseDataSBG courseDataSBG = courseDataSBGRepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataSBG(courseDataSBG)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -106,7 +116,7 @@ public class CourseService {
             CourseDataSH courseDataSH = courseDataSHRepository.findById(request.getCourseDataId()).orElseThrow(NotFoundCourseException::new);
             courseCourseDataRel = CourseCourseDataRel.builder()
                     .courseDataSH(courseDataSH)
-                    .sequence(request.getSequence())
+                    .sequence(maxSeq+1)
                     .build();
             courseCourseDataRel.assignCourse(course);
             return courseCourseDataRelRepository.save(courseCourseDataRel).getId();
@@ -116,6 +126,11 @@ public class CourseService {
 
     public Page<CourseResponse> getCourses(Pageable pageable) {
         Page<CourseResponse> map = courseRepository.findAll(pageable).map(CourseResponse::new);
+        return map;
+    }
+
+    public Page<CourseResponse> getCoursesByRegion(CourseRegion courseRegion, Pageable pageable) {
+        Page<CourseResponse> map = courseRepository.findAllByRegion(courseRegion,pageable).map(CourseResponse::new);
         return map;
     }
 }
