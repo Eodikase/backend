@@ -7,6 +7,7 @@ import com.konkuk.Eodikase.dto.response.data.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataCountResponse;
 import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.dto.response.Response;
+import com.konkuk.Eodikase.dto.response.data.SearchCourseDataResponse;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -60,6 +61,18 @@ public class CourseDataController {
     ) {
         FilteredCourseDataCountResponse response = courseDataService.filterCourseDataCountByRadius(
                 memberId, region, request);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "코스 아이템 키워드 검색")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/{region}/search")
+    public Response<?> getCourseDataCountByRadius(
+            @LoginUserId Long memberId,
+            @PathVariable String region,
+            @RequestParam("keyword") String keyword
+    ) {
+        SearchCourseDataResponse response = courseDataService.searchCourseDataByKeyword(memberId, region, keyword);
         return Response.ofSuccess("OK", response);
     }
 }
