@@ -8,7 +8,5 @@ public class CourseDataPostRequest {
 
     private Long courseDataId;
     private String region;
-    private int sequence;
-
 
 }

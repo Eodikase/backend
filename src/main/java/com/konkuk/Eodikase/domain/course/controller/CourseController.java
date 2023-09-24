@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.course.controller;
 
 import com.konkuk.Eodikase.domain.course.entity.Course;
+import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
 import com.konkuk.Eodikase.domain.course.repository.CourseRepository;
 import com.konkuk.Eodikase.dto.request.course.CourseDataPostRequest;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
@@ -57,7 +58,13 @@ public class CourseController {
         Page<CourseResponse> courses = courseService.getCourses(pageable);
         return Response.ofSuccess("OK",courses);
     }
-
+    @Operation(summary = "코스 지역별 조회")
+    @GetMapping("/{region}")
+    public Response listByRegion(@PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+                                 @PathVariable("region") CourseRegion region){
+        Page<CourseResponse> coursesByRegion = courseService.getCoursesByRegion(region,pageable);
+        return Response.ofSuccess("OK",coursesByRegion);
+    }
 }
 
 

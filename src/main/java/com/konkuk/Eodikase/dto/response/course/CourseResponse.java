@@ -41,9 +41,10 @@ public class CourseResponse {
     static class CourseCourseDataRelResponse{
         private String name;
         private String imageUrl;
-
+        private int sequence;
 
         public CourseCourseDataRelResponse(CourseCourseDataRel courseCourseDataRel){
+            this.sequence = courseCourseDataRel.getSequence();
             if (courseCourseDataRel.getCourseDataEM() != null) {
                 updateFields(courseCourseDataRel.getCourseDataEM());
             }

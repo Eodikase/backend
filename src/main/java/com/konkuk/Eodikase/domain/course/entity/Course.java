@@ -28,6 +28,8 @@ public class Course extends BaseEntity {
 
     private String courseDescription;
 
+    private CourseRegion region;
+
     //코스 사용자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -52,12 +54,12 @@ public class Course extends BaseEntity {
     private List<Like> LikeList = new ArrayList<>();
 
     @Builder
-    public Course(String courseName, String courseDescription){
+    public Course(String courseName, String courseDescription, CourseRegion region){
         this.courseName = courseName;
         this.courseDescription = courseDescription;
+        this.region = region;
     }
 
-    //==연관관계 메서드(양방향)==//
     public void assignMember(Member member){
         this.member = member;
         member.getCourseList().add(this);
