@@ -10,11 +10,18 @@ import com.konkuk.Eodikase.domain.data.entity.*;
 import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
+import com.konkuk.Eodikase.dto.response.course.CourseResponse;
 import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundCourseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -107,6 +114,8 @@ public class CourseService {
         throw new InvalidRegionException();
     }
 
-
-
+    public Page<CourseResponse> getCourses(Pageable pageable) {
+        Page<CourseResponse> map = courseRepository.findAll(pageable).map(CourseResponse::new);
+        return map;
+    }
 }

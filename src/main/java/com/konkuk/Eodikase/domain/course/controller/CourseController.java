@@ -1,17 +1,26 @@
 package com.konkuk.Eodikase.domain.course.controller;
 
+import com.konkuk.Eodikase.domain.course.entity.Course;
+import com.konkuk.Eodikase.domain.course.repository.CourseRepository;
 import com.konkuk.Eodikase.dto.request.course.CourseDataPostRequest;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.service.CourseService;
-import com.konkuk.Eodikase.domain.data.dto.request.FilteredCourseDataRequest;
-import com.konkuk.Eodikase.domain.data.dto.response.FilteredCourseDataResponse;
+import com.konkuk.Eodikase.dto.response.course.CourseResponse;
+import com.konkuk.Eodikase.dto.response.Response;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,25 +28,34 @@ import org.springframework.web.bind.annotation.*;
 public class CourseController {
 
     private final CourseService courseService;
+
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "코스 데이터 삽입")
     @PostMapping("/{course-id}")
-    public ResponseEntity postCourseData(
+    public Response postCourseData(
             @LoginUserId Long memberId,
             @PathVariable("course-id") Long courseId,
             @RequestBody CourseDataPostRequest request){
         courseService.saveData(memberId, courseId, request);
-        return new ResponseEntity(HttpStatus.OK);
+        return Response.ofSuccess("OK",null);
     }
+
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "코스 생성")
     @PostMapping
-    public ResponseEntity saveCourse(
+    public Response saveCourse(
            @LoginUserId Long memberId,
            @RequestBody CoursePostRequest request){
 
         courseService.saveCourse(memberId,request);
-        return new ResponseEntity(HttpStatus.OK);
+        return Response.ofSuccess("OK",null);
+    }
+
+    @Operation(summary = "코스 전체 조회")
+    @GetMapping
+    public Response list(@PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<CourseResponse> courses = courseService.getCourses(pageable);
+        return Response.ofSuccess("OK",courses);
     }
 
 }
