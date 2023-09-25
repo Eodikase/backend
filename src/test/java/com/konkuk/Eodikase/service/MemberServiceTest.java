@@ -250,15 +250,19 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
+        String newIntro = "hi";
         Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
                 null);
         memberRepository.save(member);
 
-        memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname));
+        memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname, newIntro));
         Member updatedMember = memberRepository.findById(member.getId())
                 .orElseThrow();
 
-        assertThat(updatedMember.getNickname()).isEqualTo(newNickname);
+        assertAll(
+                () -> assertThat(updatedMember.getNickname()).isEqualTo(newNickname),
+                () -> assertThat(updatedMember.getIntro()).isEqualTo(newIntro)
+        );
     }
 
     @Test
@@ -268,11 +272,12 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "감";
+        String newIntro = "hi";
         Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
                 null);
         memberRepository.save(member);
 
-        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
+        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname, newIntro);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
                 .isInstanceOf(InvalidNicknameException.class);
     }
@@ -284,12 +289,13 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
+        String newIntro = "hi";
         Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME,
                 null));
         memberRepository.save(new Member("dlawotn2@naver.com", "edks123!!!", "돌이",
                 MemberPlatform.HOME, null));
 
-        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
+        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname, newIntro);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
                 .isInstanceOf(DuplicateNicknameException.class);
     }

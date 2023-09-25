@@ -107,10 +107,11 @@ public class MemberService {
     @Transactional
     public void updateProfileInfo(Long memberId, MemberProfileUpdateRequest request) {
         String updateNickname = request.getNickname();
+        String updateIntro = request.getIntro();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         validateDuplicateNickname(updateNickname);
-        member.updateProfileInfo(updateNickname);
+        member.updateProfileInfo(updateNickname, updateIntro);
     }
 
     @Transactional

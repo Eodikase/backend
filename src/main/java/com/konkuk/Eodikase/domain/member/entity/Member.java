@@ -66,6 +66,9 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "member_profile_image_id")
     private MemberProfileImage memberProfileImage;
 
+    @Column(name = "intro", length = 150)
+    private String intro;
+
     public Member(String email, String password, String nickname, MemberPlatform platform,
                   MemberProfileImage memberProfileImage) {
         validateNickname(nickname);
@@ -138,9 +141,10 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void updateProfileInfo(String nickname) {
+    public void updateProfileInfo(String nickname, String intro) {
         validateNickname(nickname);
         this.nickname = nickname;
+        this.intro = intro;
     }
 
     public void deleteMemberInfo() {
