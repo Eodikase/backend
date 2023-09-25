@@ -6,9 +6,10 @@ import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.course.repository.CourseRepository;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
-import com.konkuk.Eodikase.exception.badrequest.BookmarkExistException;
-import com.konkuk.Eodikase.exception.badrequest.BookmarkNotExistException;
-import com.konkuk.Eodikase.exception.notfound.NotFoundCourseException;
+import com.konkuk.Eodikase.exception.bookmark.BookmarkExistException;
+import com.konkuk.Eodikase.exception.bookmark.BookmarkMyException;
+import com.konkuk.Eodikase.exception.bookmark.BookmarkNotExistException;
+import com.konkuk.Eodikase.exception.course.NotFoundCourseException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class BookmarkService {
         // 이미 북마크되어있으면 에러 반환
         if (bookmarkRepository.findByMemberAndCourse(member, course).isPresent()){
             throw new BookmarkExistException();
+        }
+        // 자신이 생성한 코스 북마크 시 에러 반환
+        if(course.getMember() == member){
+            throw new BookmarkMyException();
         }
 
         Bookmark bookemark = Bookmark.builder()
