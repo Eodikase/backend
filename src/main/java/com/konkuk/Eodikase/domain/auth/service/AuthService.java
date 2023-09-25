@@ -1,18 +1,16 @@
 package com.konkuk.Eodikase.domain.auth.service;
 
-import com.konkuk.Eodikase.dto.request.AuthLoginRequest;
-import com.konkuk.Eodikase.dto.request.KakaoLoginRequest;
-import com.konkuk.Eodikase.dto.response.OAuthTokenResponse;
-import com.konkuk.Eodikase.dto.response.TokenResponse;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
+import com.konkuk.Eodikase.dto.request.AuthLoginRequest;
+import com.konkuk.Eodikase.dto.request.KakaoLoginRequest;
+import com.konkuk.Eodikase.dto.response.OAuthTokenResponse;
+import com.konkuk.Eodikase.dto.response.TokenResponse;
 import com.konkuk.Eodikase.exception.badrequest.PasswordMismatchException;
-import com.konkuk.Eodikase.exception.notfound.NotFoundException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
-import com.konkuk.Eodikase.exception.unauthorized.InvalidKakaoTokenException;
 import com.konkuk.Eodikase.security.auth.JwtTokenProvider;
 import com.konkuk.Eodikase.security.auth.OAuthPlatformMemberResponse;
 import com.konkuk.Eodikase.security.auth.kakao.KakaoOAuthUserProvider;
@@ -57,17 +55,13 @@ public class AuthService {
     }
 
     public OAuthTokenResponse kakaoOAuthLogin(KakaoLoginRequest request) {
-        try {
-            OAuthPlatformMemberResponse kakaoPlatformMember =
-                    kakaoOAuthUserProvider.getKakaoPlatformMember(request.getToken());
-            return generateOAuthTokenResponse(
-                    MemberPlatform.KAKAO,
-                    kakaoPlatformMember.getEmail(),
-                    kakaoPlatformMember.getPlatformId()
-            );
-        } catch (NotFoundException e) {
-            throw new InvalidKakaoTokenException();
-        }
+        OAuthPlatformMemberResponse kakaoPlatformMember =
+                kakaoOAuthUserProvider.getKakaoPlatformMember(request.getToken());
+        return generateOAuthTokenResponse(
+                MemberPlatform.KAKAO,
+                kakaoPlatformMember.getEmail(),
+                kakaoPlatformMember.getPlatformId()
+        );
     }
 
     private OAuthTokenResponse generateOAuthTokenResponse(MemberPlatform platform, String email, String platformId) {
