@@ -111,7 +111,14 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         validateDuplicateNickname(updateNickname);
+        validIntro(updateIntro);
         member.updateProfileInfo(updateNickname, updateIntro);
+    }
+
+    private void validIntro(String intro) {
+        if (intro.length() > 150) {
+            throw new InvalidIntroException();
+        }
     }
 
     @Transactional

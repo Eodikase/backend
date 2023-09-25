@@ -347,7 +347,7 @@ public class MemberServiceTest {
         assertAll(
                 () -> assertThat(actual.getEmail()).isEqualTo(email),
                 () -> assertThat(actual.getNickname()).isEqualTo(nickname),
-                () -> assertThat(actual.getIntro()).isEqualTo(null)
+                () -> assertThat(actual.getIntro()).isEqualTo("")
         );
     }
 
@@ -368,7 +368,7 @@ public class MemberServiceTest {
         assertAll(
                 () -> assertThat(actual.getEmail()).isEqualTo(email),
                 () -> assertThat(actual.getNickname()).isEqualTo(nickname),
-                () -> assertThat(actual.getIntro()).isEqualTo(null)
+                () -> assertThat(actual.getIntro()).isEqualTo("")
         );
     }
 
