@@ -76,7 +76,7 @@ public class CourseController {
     @PostMapping("/score/{course-id}")
     public Response listByRegion(@LoginUserId Long memberId,
                                  @PathVariable("course-id") Long courseId,
-                                 @RequestParam double score) {
+                                 @RequestParam double score ) {
         courseService.insertScore(courseId,score);
         return Response.ofSuccess("OK", null);
     }
