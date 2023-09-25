@@ -1,12 +1,14 @@
 package com.konkuk.Eodikase.dto.response.member;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString
-public class MyPageResponse {
+public class MemberPageResponse {
 
     private String email;
     private String nickname;

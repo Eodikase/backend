@@ -158,13 +158,13 @@ public class MemberService {
     public MyPageResponse findMyInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
+        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl(), member.getIntro());
     }
 
-    public MyPageResponse findMemberInfo(Long memberId) {
+    public MemberPageResponse findMemberInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
+        return new MemberPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl(), member.getIntro());
     }
 
     @Transactional

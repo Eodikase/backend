@@ -352,6 +352,27 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("타회원의 프로필 정보를 조회한다")
+    void getMemberProfileInfo() {
+        String email = "dlawotn2@naver.com";
+        String nickname = "니니";
+        Member member1 = new Member("dlawotn3@naver.com", passwordEncoder.encode("edks1234!"),
+                "감자", MemberPlatform.HOME, null);
+        Member member2 = new Member(email, passwordEncoder.encode("edks1234!"),
+                nickname, MemberPlatform.HOME, null);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        MemberPageResponse actual = memberService.findMemberInfo(member2.getId());
+
+        assertAll(
+                () -> assertThat(actual.getEmail()).isEqualTo(email),
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname),
+                () -> assertThat(actual.getIntro()).isEqualTo(null)
+        );
+    }
+
+    @Test
     @DisplayName("회원을 정상적으로 탈퇴한다")
     void deleteMember() {
         String email = "dlawotn3@naver.com";

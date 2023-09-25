@@ -106,7 +106,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @GetMapping("/mypage/{memberId}")
     public Response<?> findMemberInfo(@LoginUserId Long memberId) {
-        MyPageResponse response = memberService.findMemberInfo(memberId);
+        MemberPageResponse response = memberService.findMemberInfo(memberId);
         return Response.ofSuccess("OK", response);
     }
 
