@@ -9,8 +9,10 @@ import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.exception.badrequest.PasswordMismatchException;
+import com.konkuk.Eodikase.exception.notfound.NotFoundException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.exception.unauthorized.InactiveMemberException;
+import com.konkuk.Eodikase.exception.unauthorized.InvalidKakaoTokenException;
 import com.konkuk.Eodikase.security.auth.JwtTokenProvider;
 import com.konkuk.Eodikase.security.auth.OAuthPlatformMemberResponse;
 import com.konkuk.Eodikase.security.auth.kakao.KakaoOAuthUserProvider;
@@ -55,13 +57,17 @@ public class AuthService {
     }
 
     public OAuthTokenResponse kakaoOAuthLogin(KakaoLoginRequest request) {
-        OAuthPlatformMemberResponse kakaoPlatformMember =
-                kakaoOAuthUserProvider.getKakaoPlatformMember(request.getToken());
-        return generateOAuthTokenResponse(
-                MemberPlatform.KAKAO,
-                kakaoPlatformMember.getEmail(),
-                kakaoPlatformMember.getPlatformId()
-        );
+        try {
+            OAuthPlatformMemberResponse kakaoPlatformMember =
+                    kakaoOAuthUserProvider.getKakaoPlatformMember(request.getToken());
+            return generateOAuthTokenResponse(
+                    MemberPlatform.KAKAO,
+                    kakaoPlatformMember.getEmail(),
+                    kakaoPlatformMember.getPlatformId()
+            );
+        } catch (NotFoundException e) {
+            throw new InvalidKakaoTokenException();
+        }
     }
 
     private OAuthTokenResponse generateOAuthTokenResponse(MemberPlatform platform, String email, String platformId) {
