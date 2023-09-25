@@ -161,6 +161,12 @@ public class MemberService {
         return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
     }
 
+    public MyPageResponse findMemberInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
+    }
+
     @Transactional
     public void updateProfileImage(Long memberId, MultipartFile profileImg) {
         Member member = memberRepository.findById(memberId)

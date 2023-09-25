@@ -94,11 +94,19 @@ public class MemberController {
         return Response.ofSuccess("OK", response);
     }
 
-    @Operation(summary = "마이페이지 조회")
+    @Operation(summary = "마이페이지 정보 조회")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/mypage")
     public Response<?> findMyInfo(@LoginUserId Long memberId) {
         MyPageResponse response = memberService.findMyInfo(memberId);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "타회원 프로필 정보 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/mypage/{memberId}")
+    public Response<?> findMemberInfo(@LoginUserId Long memberId) {
+        MyPageResponse response = memberService.findMemberInfo(memberId);
         return Response.ofSuccess("OK", response);
     }
 
