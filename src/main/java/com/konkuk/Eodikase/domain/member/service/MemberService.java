@@ -135,7 +135,6 @@ public class MemberService {
     public GetUpdateProfileInfoResponse getUpdateProfileInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-
         return new GetUpdateProfileInfoResponse(member.getEmail(), member.getNickname());
     }
 
