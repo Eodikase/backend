@@ -30,6 +30,10 @@ public class Course extends BaseEntity {
 
     private CourseRegion region;
 
+    private Boolean isOpen = true;
+
+    private double CourseScore;
+
     //코스 사용자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -45,7 +49,7 @@ public class Course extends BaseEntity {
     private List<Review> reviewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "course")
-    private List<CourseHashtagRel> hashtagList = new ArrayList<>();
+    private List<CourseHashtagRel> hashtagRelList = new ArrayList<>();
 
     @OneToMany(mappedBy = "course")
     private List<CourseCourseDataRel> courseDataRelList = new ArrayList<>();
@@ -54,10 +58,11 @@ public class Course extends BaseEntity {
     private List<Like> LikeList = new ArrayList<>();
 
     @Builder
-    public Course(String courseName, String courseDescription, CourseRegion region){
+    public Course(String courseName, String courseDescription, CourseRegion region, Boolean isOpen){
         this.courseName = courseName;
         this.courseDescription = courseDescription;
         this.region = region;
+        this.isOpen = isOpen;
     }
 
     public void assignMember(Member member){
@@ -68,6 +73,10 @@ public class Course extends BaseEntity {
     public void addCourseDataRelList(CourseCourseDataRel courseDataRel){
         this.courseDataRelList.add(courseDataRel);
         courseDataRel.assignCourse(this);
+    }
+
+    public void updateScore(double courseScore){
+        this.CourseScore = courseScore;
     }
 
 }

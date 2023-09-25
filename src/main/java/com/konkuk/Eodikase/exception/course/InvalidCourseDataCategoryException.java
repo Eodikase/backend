@@ -1,4 +1,6 @@
-package com.konkuk.Eodikase.exception.badrequest;
+package com.konkuk.Eodikase.exception.course;
+
+import com.konkuk.Eodikase.exception.badrequest.BadRequestException;
 
 public class InvalidCourseDataCategoryException extends BadRequestException {
 

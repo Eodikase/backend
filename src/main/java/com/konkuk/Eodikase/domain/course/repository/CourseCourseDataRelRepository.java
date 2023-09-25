@@ -9,6 +9,5 @@ import java.util.List;
 
 
 public interface CourseCourseDataRelRepository extends JpaRepository<CourseCourseDataRel,Long> {
-    @Query("select c.sequence from CourseCourseDataRel c where c.course.id = :courseId ORDER BY c.sequence DESC")
-    List<Integer> findTopByCourseId(@Param("courseId") Long courseId);
+    List<CourseCourseDataRel> findByCourseId(Long courseId);
 }

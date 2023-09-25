@@ -1,5 +1,6 @@
-package com.konkuk.Eodikase.exception.notfound;
+package com.konkuk.Eodikase.exception.course;
 
+import com.konkuk.Eodikase.exception.notfound.NotFoundException;
 import lombok.Getter;
 
 @Getter

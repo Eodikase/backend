@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.dto.request.course;
 
 import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
+import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import lombok.Data;
 import lombok.Getter;
 
@@ -14,5 +15,13 @@ public class CoursePostRequest {
     private String courseDescription;
 
     private CourseRegion courseRegion;
+
+    private Boolean isOpen;
+
+    private List<Long> courseDataIdList;
+
+    private String CourseDataRegion;
+
+    private List<Long> hashTagNameIdList;
 
 }

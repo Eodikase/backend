@@ -23,9 +23,6 @@ public class CourseCourseDataRel {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    //코스에서 해당 데이터가 몇번째인지
-    private int sequence;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_data_em_id")
     private CourseDataEM courseDataEM;
@@ -58,7 +55,7 @@ public class CourseCourseDataRel {
 
     @Builder
     public CourseCourseDataRel(CourseDataEM courseDataEM, CourseDataHI courseDataHI, CourseDataHSE courseDataHSE,
-                               CourseDataKSS courseDataKSS, CourseDataNS courseDataNS,CourseDataSBG courseDataSBG, CourseDataSH courseDataSH, int sequence )
+                               CourseDataKSS courseDataKSS, CourseDataNS courseDataNS,CourseDataSBG courseDataSBG, CourseDataSH courseDataSH)
     {
         this.courseDataEM = courseDataEM;
         this.courseDataHI = courseDataHI;
@@ -67,7 +64,7 @@ public class CourseCourseDataRel {
         this.courseDataNS = courseDataNS;
         this.courseDataSBG = courseDataSBG;
         this.courseDataSH = courseDataSH;
-        this.sequence = sequence;
+
     }
     public void assignCourse(Course course){
         this.course = course;

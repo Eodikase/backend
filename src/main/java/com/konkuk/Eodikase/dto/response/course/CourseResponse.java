@@ -3,6 +3,8 @@ package com.konkuk.Eodikase.dto.response.course;
 import com.konkuk.Eodikase.domain.audit.BaseCourseEntity;
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.course.entity.CourseCourseDataRel;
+import com.konkuk.Eodikase.domain.course.entity.CourseHashtagRel;
+import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
@@ -21,8 +23,12 @@ public class CourseResponse {
     private MemberProfileImage memberProfileImage;
     private int bookmarkCount;
     private int likeCount;
-    private List<CourseCourseDataRelResponse> courseDataList;
     private Timestamp createdDate;
+    private double courseScore;
+    private List<CourseCourseDataRelResponse> courseDataList;
+    private List<CourseHashtagRelResponse> hashtagList;
+
+
 
 
     public CourseResponse(Course course){
@@ -32,38 +38,53 @@ public class CourseResponse {
         this.nickname = course.getMember().getNickname();
         this.memberProfileImage = course.getMember().getMemberProfileImage();
         this.bookmarkCount = course.getBookmarkList().size();
-        this.courseDataList = course.getCourseDataRelList()
-                .stream().map(CourseCourseDataRelResponse::new).collect(Collectors.toList());
+        this.courseDataList = course.getCourseDataRelList().stream().map(CourseCourseDataRelResponse::new).collect(Collectors.toList());
         this.likeCount = course.getLikeList().size();
         this.createdDate = course.getCreatedDate();
+        this.courseScore = course.getCourseScore();
+        this.hashtagList = course.getHashtagRelList().stream().map(CourseHashtagRelResponse::new).collect(Collectors.toList());
+
     }
     @Data
     static class CourseCourseDataRelResponse{
+        private Long courseDataId;
         private String name;
         private String imageUrl;
-        private int sequence;
+        private String category;
+        private String location;
+        private Float scoreByNaver;
+
+
+
 
         public CourseCourseDataRelResponse(CourseCourseDataRel courseCourseDataRel){
-            this.sequence = courseCourseDataRel.getSequence();
+
             if (courseCourseDataRel.getCourseDataEM() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataEM().getId();
                 updateFields(courseCourseDataRel.getCourseDataEM());
             }
             if (courseCourseDataRel.getCourseDataHI() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataHI().getId();
                 updateFields(courseCourseDataRel.getCourseDataHI());
             }
             if (courseCourseDataRel.getCourseDataHSE() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataHSE().getId();
                 updateFields(courseCourseDataRel.getCourseDataHSE());
             }
             if (courseCourseDataRel.getCourseDataKSS() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataKSS().getId();
                 updateFields(courseCourseDataRel.getCourseDataKSS());
             }
             if (courseCourseDataRel.getCourseDataNS() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataNS().getId();
                 updateFields(courseCourseDataRel.getCourseDataNS());
             }
             if (courseCourseDataRel.getCourseDataSBG() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataSBG().getId();
                 updateFields(courseCourseDataRel.getCourseDataSBG());
             }
             if (courseCourseDataRel.getCourseDataSH() != null) {
+                this.courseDataId = courseCourseDataRel.getCourseDataSH().getId();
                 updateFields(courseCourseDataRel.getCourseDataSH());
             }
         }
@@ -71,6 +92,20 @@ public class CourseResponse {
         private void updateFields(BaseCourseEntity courseData) {
             this.name = courseData.getName();
             this.imageUrl = courseData.getImageUrl();
+            this.category = courseData.getCategory();
+            this.location = courseData.getLocation();
+            this.scoreByNaver = courseData.getScoreByNaver();
         }
+    }
+    @Data
+    private class CourseHashtagRelResponse {
+        private HashTagName hashtagCode;
+        private String hashtagName;
+
+        public CourseHashtagRelResponse(CourseHashtagRel courseHashtagRel){
+            this.hashtagCode = courseHashtagRel.getHashtag().getHashTagName();
+            this.hashtagName = courseHashtagRel.getHashtag().getHashTagName().description();
+        }
+
     }
 }
