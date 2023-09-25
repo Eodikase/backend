@@ -10,4 +10,6 @@ public class GetUpdateProfileInfoResponse {
     private String email;
 
     private String nickname;
+
+    private String intro;
 }
