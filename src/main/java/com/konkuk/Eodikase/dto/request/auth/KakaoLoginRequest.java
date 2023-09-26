@@ -1,4 +1,5 @@
-package com.konkuk.Eodikase.dto.request.member;
+
+package com.konkuk.Eodikase.dto.request.auth;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,19 +1,17 @@
-package com.konkuk.Eodikase.dto.request.member;
+package com.konkuk.Eodikase.dto.response.member;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
-public class MemberProfileUpdateRequest {
+public class MemberPageResponse {
 
-    @NotBlank(message = "1005:공백일 수 없습니다.")
+    private String email;
     private String nickname;
-
+    private String imgUrl;
     private String intro;
 }

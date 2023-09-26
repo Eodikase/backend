@@ -7,8 +7,9 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class FilteredCourseDataResponse {
-    private String datasType;
-    private List<FilteredCourseDataByRadiusResponse> contents;
+public class SearchCourseDatasResponse {
+
+    private List<SearchCourseDataResponse> contents;
+
     private Boolean isEnd;
 }

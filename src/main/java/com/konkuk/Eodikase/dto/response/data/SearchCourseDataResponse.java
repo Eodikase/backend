@@ -5,8 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FindAllCourseDataResponse {
+public class SearchCourseDataResponse {
+
     private Long id;
-    private double lat;
-    private double lng;
+
+    private String name;
 }

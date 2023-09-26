@@ -7,6 +7,7 @@ import com.konkuk.Eodikase.dto.response.data.CourseDataDetailInfoResponse;
 import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataCountResponse;
 import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataResponse;
 import com.konkuk.Eodikase.dto.response.Response;
+import com.konkuk.Eodikase.dto.response.data.SearchCourseDatasResponse;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/courseDatas")
+@RequestMapping("/v1/coursedatas")
 public class CourseDataController {
 
     private final CourseDataService courseDataService;
@@ -60,6 +61,22 @@ public class CourseDataController {
     ) {
         FilteredCourseDataCountResponse response = courseDataService.filterCourseDataCountByRadius(
                 memberId, region, request);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "코스 아이템 키워드 검색")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/{region}/search")
+    public Response<?> getCourseDataCountByRadius(
+            @LoginUserId Long memberId,
+            @PathVariable String region,
+            @RequestParam("category") String category,
+            @RequestParam("keyword") String keyword,
+            @RequestParam("page") final Integer page,
+            @RequestParam("count") final int count
+    ) {
+        SearchCourseDatasResponse response = courseDataService.searchCourseDataByKeyword(
+                memberId, region, category, keyword, page, count);
         return Response.ofSuccess("OK", response);
     }
 }

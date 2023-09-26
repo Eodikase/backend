@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.dto.response;
+package com.konkuk.Eodikase.dto.response.member;
 
 import lombok.*;
 
@@ -10,4 +10,6 @@ public class GetUpdateProfileInfoResponse {
     private String email;
 
     private String nickname;
+
+    private String intro;
 }
