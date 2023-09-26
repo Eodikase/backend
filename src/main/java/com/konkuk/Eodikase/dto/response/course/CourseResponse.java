@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Data
 public class CourseResponse {
     private Long courseId;
+    private Long memberId;
     private String courseName;
     private String courseDescription;
     private String nickname;
@@ -31,8 +32,10 @@ public class CourseResponse {
 
 
 
+
     public CourseResponse(Course course){
         this.courseId = course.getId();
+        this.memberId = course.getMember().getId();
         this.courseName = course.getCourseName();
         this.courseDescription = course.getCourseDescription();
         this.nickname = course.getMember().getNickname();
