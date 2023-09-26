@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchCourseDatasResponse {
 
-    private List<SearchCourseDataResponse> contents;
+    private List<SearchCourseDataResponse> content;
 
     private Boolean last;
 }
