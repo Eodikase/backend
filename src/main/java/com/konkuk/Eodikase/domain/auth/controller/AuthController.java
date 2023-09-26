@@ -35,6 +35,6 @@ public class AuthController {
     @PostMapping("/kakao")
     public Response<?> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
         OAuthTokenResponse response = authService.kakaoOAuthLogin(request);
-        return Response.ofSuccess("OK", response.getToken());
+        return Response.ofSuccess("OK", response);
     }
 }

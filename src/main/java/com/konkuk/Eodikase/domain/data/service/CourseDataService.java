@@ -191,7 +191,9 @@ public class CourseDataService {
         int endIndex = Math.min(filteredDataList.size(), page * count + count);
         List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataList.subList(page * count, endIndex);
 
-        return new FilteredCourseDataResponse(type, paginatedData);
+        boolean isEnd = endIndex == filteredDataList.size();
+
+        return new FilteredCourseDataResponse(type, paginatedData, isEnd);
     }
 
     private FilteredCourseDataResponse filtersCourseDataByDistanceAndScore(
@@ -214,7 +216,9 @@ public class CourseDataService {
         int endIndex = Math.min(filteredDataByRadius.size(), page * count + count);
         List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(page * count, endIndex);
 
-        return new FilteredCourseDataResponse(type, paginatedData);
+        boolean isEnd = endIndex == filteredDataByRadius.size();
+
+        return new FilteredCourseDataResponse(type, paginatedData, isEnd);
     }
 
     public CourseDataDetailInfoResponse searchCourseDataDetailInfo(Long memberId, String region, Long dataId) {
