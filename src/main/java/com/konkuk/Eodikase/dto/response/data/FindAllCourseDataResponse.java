@@ -1,16 +1,12 @@
 package com.konkuk.Eodikase.dto.response.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class FindAllCourseDataResponse {
     private Long id;
     private double lat;
     private double lng;
-
-    public FindAllCourseDataResponse(Long id, double lat, double lng) {
-        this.id = id;
-        this.lat = lat;
-        this.lng = lng;
-    }
 }
