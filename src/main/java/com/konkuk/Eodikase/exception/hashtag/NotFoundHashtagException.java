@@ -7,6 +7,6 @@ import lombok.Getter;
 public class NotFoundHashtagException extends NotFoundException {
 
     public NotFoundHashtagException() {
-        super("존재하지 않는 해시태그입니다.", 1007);
+        super("존재하지 않는 해시태그입니다.", 6000);
     }
 }
