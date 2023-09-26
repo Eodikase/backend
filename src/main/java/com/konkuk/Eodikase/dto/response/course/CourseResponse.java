@@ -53,6 +53,8 @@ public class CourseResponse {
         private String category;
         private String location;
         private Float scoreByNaver;
+        private double lat;
+        private double lng;
 
 
 
@@ -95,6 +97,8 @@ public class CourseResponse {
             this.category = courseData.getCategory();
             this.location = courseData.getLocation();
             this.scoreByNaver = courseData.getScoreByNaver();
+            this.lat = courseData.getLat();
+            this.lng = courseData.getLng();
         }
     }
     @Data

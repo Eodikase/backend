@@ -41,6 +41,7 @@ public class LikeService {
 
         likeRepository.save(like);
     }
+
     public void cancel(Long memberId, Long courseId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);

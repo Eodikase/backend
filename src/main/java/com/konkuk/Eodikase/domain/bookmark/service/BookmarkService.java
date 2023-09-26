@@ -46,6 +46,7 @@ public class BookmarkService {
 
         bookmarkRepository.save(bookemark);
     }
+
     public void delete(Long memberId, Long courseId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);

@@ -24,6 +24,7 @@ public class BookmarkController {
     ){
         bookmarkService.insert(memberId, courseId);
         return Response.ofSuccess("OK",null);
+
     }
     @Operation(summary = "북마크 취소")
     @SecurityRequirement(name = "JWT")
