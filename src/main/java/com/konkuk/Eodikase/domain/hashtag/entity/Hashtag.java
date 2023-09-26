@@ -17,9 +17,8 @@ public class Hashtag {
     @Column(name="hashtag_id")
     private Long id;
 
-    private String tagName;
-
-    private String content;
+    @Enumerated(value = EnumType.STRING)
+    private HashTagName hashTagName;
 
     @OneToMany(mappedBy = "hashtag")
     private List<CourseHashtagRel> courseList = new ArrayList<>();

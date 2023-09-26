@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.domain.bookmark.entity;
+package com.konkuk.Eodikase.domain.like.entity;
 
 import com.konkuk.Eodikase.domain.course.entity.Course;
 import com.konkuk.Eodikase.domain.member.entity.Member;
@@ -11,13 +11,13 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "bookmark")
+@Table(name = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Bookmark {
+public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="bookmark_id")
+    @Column(name="like_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,7 +29,7 @@ public class Bookmark {
     private Course course;
 
     @Builder
-    public Bookmark(Member member, Course course){
+    public Like(Member member, Course course){
         this.member = member;
         this.course = course;
     }
