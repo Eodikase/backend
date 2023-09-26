@@ -1,6 +1,6 @@
 package com.konkuk.Eodikase.domain.data.entity;
 
-import com.konkuk.Eodikase.exception.badrequest.InvalidCourseDataCategoryException;
+import com.konkuk.Eodikase.exception.course.InvalidCourseDataCategoryException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

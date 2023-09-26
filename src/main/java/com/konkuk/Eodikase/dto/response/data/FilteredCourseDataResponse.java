@@ -9,6 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 public class FilteredCourseDataResponse {
     private String datasType;
+
     private List<FilteredCourseDataByRadiusResponse> content;
+
     private Boolean last;
 }

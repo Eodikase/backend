@@ -7,6 +7,7 @@ import com.konkuk.Eodikase.dto.request.data.FilteredCourseDataCountRequest;
 import com.konkuk.Eodikase.dto.request.data.FilteredCourseDataRequest;
 import com.konkuk.Eodikase.dto.response.data.*;
 import com.konkuk.Eodikase.exception.badrequest.*;
+import com.konkuk.Eodikase.exception.course.InvalidCourseDataCategoryException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundCourseDataException;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import lombok.RequiredArgsConstructor;

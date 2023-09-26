@@ -4,6 +4,7 @@ import com.konkuk.Eodikase.domain.audit.BaseEntity;
 import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.comment.entity.Comment;
 import com.konkuk.Eodikase.domain.course.entity.Course;
+import com.konkuk.Eodikase.domain.like.entity.Like;
 import com.konkuk.Eodikase.domain.review.entity.Review;
 import com.konkuk.Eodikase.exception.badrequest.InvalidNicknameException;
 import lombok.AccessLevel;
@@ -49,6 +50,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Review> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Like> LikeList = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private MemberStatus status;
