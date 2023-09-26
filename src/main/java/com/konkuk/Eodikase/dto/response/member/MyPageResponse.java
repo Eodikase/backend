@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.dto.response;
+package com.konkuk.Eodikase.dto.response.member;
 
 import lombok.*;
 
@@ -11,4 +11,5 @@ public class MyPageResponse {
     private String email;
     private String nickname;
     private String imgUrl;
+    private String intro;
 }

@@ -1,4 +1,4 @@
-package com.konkuk.Eodikase.dto.response;
+package com.konkuk.Eodikase.dto.response.data;
 
 import lombok.AccessLevel;
 import lombok.Getter;

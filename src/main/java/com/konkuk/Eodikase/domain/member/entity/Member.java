@@ -66,6 +66,9 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "member_profile_image_id")
     private MemberProfileImage memberProfileImage;
 
+    @Column(name = "intro", length = 150)
+    private String intro;
+
     public Member(String email, String password, String nickname, MemberPlatform platform,
                   MemberProfileImage memberProfileImage) {
         validateNickname(nickname);
@@ -77,6 +80,7 @@ public class Member extends BaseEntity {
         this.platform = platform;
         this.platformId = null;
         this.memberProfileImage = memberProfileImage;
+        this.intro = "";
     }
 
     public Member(String email, String password, String nickname,
@@ -89,6 +93,7 @@ public class Member extends BaseEntity {
         this.role = MemberRole.USER;
         this.platformId = platformId;
         this.status = status;
+        this.intro = "";
     }
 
     public Member(String email, String password, String nickname, MemberProfileImage memberProfileImage,
@@ -102,6 +107,7 @@ public class Member extends BaseEntity {
         this.platformId = platformId;
         this.role = MemberRole.USER;
         this.status = MemberStatus.MEMBER_ACTIVE;
+        this.intro = " ";
     }
 
     public Member(String email, MemberPlatform platform, String platformId) {
@@ -110,6 +116,7 @@ public class Member extends BaseEntity {
         this.platformId = platformId;
         this.role = MemberRole.USER;
         this.status = MemberStatus.MEMBER_ACTIVE;
+        this.intro = " ";
     }
 
     public Member(String email, MemberPlatform platform, String platformId, MemberStatus status) {
@@ -118,6 +125,7 @@ public class Member extends BaseEntity {
         this.platformId = platformId;
         this.role = MemberRole.USER;
         this.status = status;
+        this.intro = " ";
     }
 
     public void registerOAuthMember(String email, String nickname) {
@@ -138,9 +146,10 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void updateProfileInfo(String nickname) {
+    public void updateProfileInfo(String nickname, String intro) {
         validateNickname(nickname);
         this.nickname = nickname;
+        this.intro = intro;
     }
 
     public void deleteMemberInfo() {

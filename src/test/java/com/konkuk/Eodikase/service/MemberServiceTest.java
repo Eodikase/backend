@@ -1,10 +1,10 @@
 package com.konkuk.Eodikase.service;
 
-import com.konkuk.Eodikase.dto.request.MemberProfileUpdateRequest;
-import com.konkuk.Eodikase.dto.request.MemberSignUpRequest;
-import com.konkuk.Eodikase.dto.request.ResetPasswordRequest;
-import com.konkuk.Eodikase.dto.request.OAuthMemberSignUpRequest;
-import com.konkuk.Eodikase.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
+import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
+import com.konkuk.Eodikase.dto.request.member.OAuthMemberSignUpRequest;
+import com.konkuk.Eodikase.dto.request.member.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
@@ -12,7 +12,7 @@ import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.domain.member.service.MemberService;
-import com.konkuk.Eodikase.dto.response.*;
+import com.konkuk.Eodikase.dto.response.member.*;
 import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.support.AwsS3Uploader;
@@ -250,15 +250,19 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
+        String newIntro = "hi";
         Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
                 null);
         memberRepository.save(member);
 
-        memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname));
+        memberService.updateProfileInfo(member.getId(), new MemberProfileUpdateRequest(newNickname, newIntro));
         Member updatedMember = memberRepository.findById(member.getId())
                 .orElseThrow();
 
-        assertThat(updatedMember.getNickname()).isEqualTo(newNickname);
+        assertAll(
+                () -> assertThat(updatedMember.getNickname()).isEqualTo(newNickname),
+                () -> assertThat(updatedMember.getIntro()).isEqualTo(newIntro)
+        );
     }
 
     @Test
@@ -268,11 +272,12 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "감";
+        String newIntro = "hi";
         Member member = new Member(email, passwordEncoder.encode(password), originalNickname, MemberPlatform.HOME,
                 null);
         memberRepository.save(member);
 
-        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
+        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname, newIntro);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
                 .isInstanceOf(InvalidNicknameException.class);
     }
@@ -284,12 +289,13 @@ public class MemberServiceTest {
         String password = "edks1234!";
         String originalNickname = "감자";
         String newNickname = "돌이";
+        String newIntro = "hi";
         Member member = memberRepository.save(new Member(email, password, originalNickname, MemberPlatform.HOME,
                 null));
         memberRepository.save(new Member("dlawotn2@naver.com", "edks123!!!", "돌이",
                 MemberPlatform.HOME, null));
 
-        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname);
+        MemberProfileUpdateRequest request = new MemberProfileUpdateRequest(newNickname, newIntro);
         assertThatThrownBy(() -> memberService.updateProfileInfo(member.getId(), request))
                 .isInstanceOf(DuplicateNicknameException.class);
     }
@@ -340,7 +346,29 @@ public class MemberServiceTest {
 
         assertAll(
                 () -> assertThat(actual.getEmail()).isEqualTo(email),
-                () -> assertThat(actual.getNickname()).isEqualTo(nickname)
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname),
+                () -> assertThat(actual.getIntro()).isEqualTo("")
+        );
+    }
+
+    @Test
+    @DisplayName("타회원의 프로필 정보를 조회한다")
+    void getMemberProfileInfo() {
+        String email = "dlawotn2@naver.com";
+        String nickname = "니니";
+        Member member1 = new Member("dlawotn3@naver.com", passwordEncoder.encode("edks1234!"),
+                "감자", MemberPlatform.HOME, null);
+        Member member2 = new Member(email, passwordEncoder.encode("edks1234!"),
+                nickname, MemberPlatform.HOME, null);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        MemberPageResponse actual = memberService.findMemberInfo(member2.getId());
+
+        assertAll(
+                () -> assertThat(actual.getEmail()).isEqualTo(email),
+                () -> assertThat(actual.getNickname()).isEqualTo(nickname),
+                () -> assertThat(actual.getIntro()).isEqualTo("")
         );
     }
 

@@ -1,17 +1,17 @@
 package com.konkuk.Eodikase.domain.member.service;
 
-import com.konkuk.Eodikase.dto.request.MemberProfileUpdateRequest;
-import com.konkuk.Eodikase.dto.request.MemberSignUpRequest;
-import com.konkuk.Eodikase.dto.request.ResetPasswordRequest;
-import com.konkuk.Eodikase.dto.request.OAuthMemberSignUpRequest;
-import com.konkuk.Eodikase.dto.request.PasswordVerifyRequest;
+import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
+import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
+import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
+import com.konkuk.Eodikase.dto.request.member.OAuthMemberSignUpRequest;
+import com.konkuk.Eodikase.dto.request.member.PasswordVerifyRequest;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
 import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
 import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
-import com.konkuk.Eodikase.dto.response.*;
+import com.konkuk.Eodikase.dto.response.member.*;
 import com.konkuk.Eodikase.exception.badrequest.*;
 import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.support.AwsS3Uploader;
@@ -107,10 +107,18 @@ public class MemberService {
     @Transactional
     public void updateProfileInfo(Long memberId, MemberProfileUpdateRequest request) {
         String updateNickname = request.getNickname();
+        String updateIntro = request.getIntro();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         validateDuplicateNickname(updateNickname);
-        member.updateProfileInfo(updateNickname);
+        validIntro(updateIntro);
+        member.updateProfileInfo(updateNickname, updateIntro);
+    }
+
+    private void validIntro(String intro) {
+        if (intro.length() > 150) {
+            throw new InvalidIntroException();
+        }
     }
 
     @Transactional
@@ -135,7 +143,8 @@ public class MemberService {
     public GetUpdateProfileInfoResponse getUpdateProfileInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        return new GetUpdateProfileInfoResponse(member.getEmail(), member.getNickname());
+
+        return new GetUpdateProfileInfoResponse(member.getEmail(), member.getNickname(), member.getIntro());
     }
 
     @Transactional
@@ -156,7 +165,13 @@ public class MemberService {
     public MyPageResponse findMyInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
+        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl(), member.getIntro());
+    }
+
+    public MemberPageResponse findMemberInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        return new MemberPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl(), member.getIntro());
     }
 
     @Transactional

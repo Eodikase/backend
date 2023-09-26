@@ -10,5 +10,4 @@ public class EodikaseApplication {
 		SpringApplication.run(EodikaseApplication.class, args);
 
 	}
-
 }
