@@ -9,7 +9,10 @@ public class SearchCourseDatasResponse {
 
     private List<SearchCourseDataResponse> contents;
 
-    public SearchCourseDatasResponse(List<SearchCourseDataResponse> contents) {
+    private Boolean isEnd;
+
+    public SearchCourseDatasResponse(List<SearchCourseDataResponse> contents, Boolean isEnd) {
         this.contents = contents;
+        this.isEnd = isEnd;
     }
 }

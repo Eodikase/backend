@@ -448,7 +448,8 @@ public class CourseDataService {
             throw new InvalidRegionException();
         }
         courseDataResponses = courseDataPage.getContent();
+        boolean isEnd = !courseDataPage.hasNext();
 
-        return new SearchCourseDatasResponse(courseDataResponses);
+        return new SearchCourseDatasResponse(courseDataResponses, isEnd);
     }
 }
