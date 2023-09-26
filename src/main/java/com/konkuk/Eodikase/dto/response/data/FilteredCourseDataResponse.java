@@ -10,5 +10,5 @@ import java.util.List;
 public class FilteredCourseDataResponse {
     private String datasType;
     private List<FilteredCourseDataByRadiusResponse> contents;
-    private Boolean isEnd;
+    private Boolean last;
 }

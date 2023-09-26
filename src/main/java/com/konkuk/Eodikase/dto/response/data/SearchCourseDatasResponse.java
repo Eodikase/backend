@@ -11,5 +11,5 @@ public class SearchCourseDatasResponse {
 
     private List<SearchCourseDataResponse> contents;
 
-    private Boolean isEnd;
+    private Boolean last;
 }

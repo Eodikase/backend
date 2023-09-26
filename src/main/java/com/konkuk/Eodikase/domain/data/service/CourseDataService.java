@@ -38,7 +38,7 @@ public class CourseDataService {
 
     public FilteredCourseDataResponse filtersCourseData(
             Long memberId, String region, String type, int stage, int order, FilteredCourseDataRequest request,
-            int page, int count
+            int page, int size
     ) {
         memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -57,9 +57,9 @@ public class CourseDataService {
 
         // 순서 필터링
         if (order == 1) { // 첫 번째 순서인 경우에만 별점순
-            return filtersCourseDataByScore(filteredDataByRadius, type, page, count);
+            return filtersCourseDataByScore(filteredDataByRadius, type, page, size);
         } else if (2 <= order && order <= 10) { // 두 번째 순서 이상부터는 거리 고려 -> 별점순
-            return filtersCourseDataByDistanceAndScore(filteredDataByRadius, type, mapX, mapY, page, count);
+            return filtersCourseDataByDistanceAndScore(filteredDataByRadius, type, mapX, mapY, page, size);
         }
 
         throw new InvalidDataOrderException();
@@ -192,14 +192,14 @@ public class CourseDataService {
         int endIndex = Math.min(filteredDataList.size(), page * count + count);
         List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataList.subList(page * count, endIndex);
 
-        boolean isEnd = endIndex == filteredDataList.size();
+        boolean last = endIndex == filteredDataList.size();
 
-        return new FilteredCourseDataResponse(type, paginatedData, isEnd);
+        return new FilteredCourseDataResponse(type, paginatedData, last);
     }
 
     private FilteredCourseDataResponse filtersCourseDataByDistanceAndScore(
             List<FilteredCourseDataByRadiusResponse> filteredDataByRadius, String type,
-            double mapX, double mapY, int page, int count) {
+            double mapX, double mapY, int page, int size) {
 
         Comparator<FilteredCourseDataByRadiusResponse> distanceAndScoreComparator = (data1, data2) -> {
             double distance1 = haversine(mapX, mapY, data1.getLat(), data1.getLng());
@@ -214,12 +214,12 @@ public class CourseDataService {
         };
         filteredDataByRadius.sort(distanceAndScoreComparator);
 
-        int endIndex = Math.min(filteredDataByRadius.size(), page * count + count);
-        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(page * count, endIndex);
+        int endIndex = Math.min(filteredDataByRadius.size(), page * size + size);
+        List<FilteredCourseDataByRadiusResponse> paginatedData = filteredDataByRadius.subList(page * size, endIndex);
 
-        boolean isEnd = endIndex == filteredDataByRadius.size();
+        boolean last = endIndex == filteredDataByRadius.size();
 
-        return new FilteredCourseDataResponse(type, paginatedData, isEnd);
+        return new FilteredCourseDataResponse(type, paginatedData, last);
     }
 
     public CourseDataDetailInfoResponse searchCourseDataDetailInfo(Long memberId, String region, Long dataId) {
@@ -400,13 +400,13 @@ public class CourseDataService {
     }
 
     public SearchCourseDatasResponse searchCourseDataByKeyword(Long memberId, String region, String category,
-                                                               String keyword, int page, int count) {
+                                                               String keyword, int page, int size) {
         memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         if (keyword.isBlank()) {
             throw new BlankKeywordException();
         }
-        Pageable pageable = PageRequest.of(page, count);
+        Pageable pageable = PageRequest.of(page, size);
         Page<SearchCourseDataResponse> courseDataPage;
         List<SearchCourseDataResponse> courseDataResponses;
         CourseDataCategory dataCategory;
@@ -452,8 +452,8 @@ public class CourseDataService {
             throw new InvalidRegionException();
         }
         courseDataResponses = courseDataPage.getContent();
-        boolean isEnd = !courseDataPage.hasNext();
+        boolean last = !courseDataPage.hasNext();
 
-        return new SearchCourseDatasResponse(courseDataResponses, isEnd);
+        return new SearchCourseDatasResponse(courseDataResponses, last);
     }
 }

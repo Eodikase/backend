@@ -31,11 +31,10 @@ public class CourseDataController {
             @RequestParam int stage,
             @RequestParam int order,
             @RequestParam("page") final Integer page,
-            @RequestParam("count") final int count,
             @RequestBody FilteredCourseDataRequest request
     ) {
         FilteredCourseDataResponse response = courseDataService.filtersCourseData(
-                memberId, region, type, stage, order, request, page, count);
+                memberId, region, type, stage, order, request, page, 7);
         return Response.ofSuccess("OK", response);
     }
 
@@ -72,11 +71,10 @@ public class CourseDataController {
             @PathVariable String region,
             @RequestParam("category") String category,
             @RequestParam("keyword") String keyword,
-            @RequestParam("page") final Integer page,
-            @RequestParam("count") final int count
+            @RequestParam("page") final Integer page
     ) {
         SearchCourseDatasResponse response = courseDataService.searchCourseDataByKeyword(
-                memberId, region, category, keyword, page, count);
+                memberId, region, category, keyword, page, 10);
         return Response.ofSuccess("OK", response);
     }
 }
