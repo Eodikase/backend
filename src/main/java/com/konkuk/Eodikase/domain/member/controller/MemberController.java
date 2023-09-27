@@ -27,28 +27,28 @@ public class MemberController {
     @PostMapping
     public Response<Object> signUp(@RequestBody @Valid MemberSignUpRequest request) {
         MemberSignUpResponse response = memberService.signUp(request);
-        return Response.ofSuccess("OK", response.getId());
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "OAuth 회원가입")
     @PostMapping("/oauth")
     public Response<Object> signUp(@RequestBody @Valid OAuthMemberSignUpRequest request) {
         OAuthMemberSignUpResponse response = memberService.signUpByOAuthMember(request);
-        return Response.ofSuccess("OK", response.getId());
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "회원가입 이메일 중복체크")
     @GetMapping("/check-duplicate/email")
     public Response<Object> checkDuplicateEmail(@RequestParam String email) {
         IsDuplicateEmailResponse response = memberService.isDuplicateEmail(email);
-        return Response.ofSuccess("OK", response.isResult());
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "회원가입 닉네임 중복체크")
     @GetMapping("/check-duplicate/nickname")
     public Response<Object> checkDuplicateNickname(@RequestParam String nickname) {
         IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
-        return Response.ofSuccess("OK", response.isResult());
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "프로필 회원정보 수정")

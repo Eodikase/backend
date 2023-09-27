@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
-    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,15}$");
+    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9]{2,15}$");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -178,5 +178,9 @@ public class Member extends BaseEntity {
 
     public boolean isRegisteredOAuthMember() {
         return nickname != null;
+    }
+
+    public void setAdminRole() {
+        this.role = MemberRole.ADMIN;
     }
 }

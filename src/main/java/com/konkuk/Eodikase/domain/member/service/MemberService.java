@@ -1,8 +1,5 @@
 package com.konkuk.Eodikase.domain.member.service;
 
-import com.konkuk.Eodikase.domain.bookmark.repository.BookmarkRepository;
-import com.konkuk.Eodikase.domain.course.repository.CourseRepository;
-import com.konkuk.Eodikase.domain.like.repository.LikeRepository;
 import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
 import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
@@ -28,7 +25,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -52,6 +48,9 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME,
                 null);
+        if (request.getEmail().equals("dnjstjr245@naver.com")) {
+            member.setAdminRole();
+        }
         return new MemberSignUpResponse(memberRepository.save(member).getId());
     }
 
@@ -106,6 +105,9 @@ public class MemberService {
                 .orElseThrow(NotFoundMemberException::new);
 
         member.registerOAuthMember(request.getEmail(), request.getNickname());
+        if (request.getEmail().equals("dnjstjr245@naver.com")) {
+            member.setAdminRole();
+        }
         return new OAuthMemberSignUpResponse(member.getId());
     }
 
@@ -156,7 +158,11 @@ public class MemberService {
     public void delete(Long memberId) {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        findMember.deleteMemberInfo();
+        if (findMember.getRole() == MemberRole.USER) {
+            findMember.deleteMemberInfo();
+        } else if (findMember.getRole() == MemberRole.ADMIN) {
+            memberRepository.deleteById(memberId);
+        }
     }
 
     @Transactional

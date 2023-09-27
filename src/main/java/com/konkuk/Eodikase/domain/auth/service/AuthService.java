@@ -35,7 +35,7 @@ public class AuthService {
         validateStatus(findMember);
 
         String token = issueToken(findMember);
-        return TokenResponse.from(token);
+        return TokenResponse.from(findMember.getId(), token);
     }
 
     private String issueToken(final Member findMember) {
@@ -73,15 +73,15 @@ public class AuthService {
                     String token = issueToken(findMember);
                     // OAuth 로그인은 성공했지만 회원가입에 실패한 경우
                     if (!findMember.isRegisteredOAuthMember()) {
-                        return new OAuthTokenResponse(token, findMember.getEmail(), false, platformId);
+                        return new OAuthTokenResponse(memberId, token, findMember.getEmail(), false, platformId);
                     }
-                    return new OAuthTokenResponse(token, findMember.getEmail(), true, platformId);
+                    return new OAuthTokenResponse(memberId, token, findMember.getEmail(), true, platformId);
                 })
                 .orElseGet(() -> {
                     Member oauthMember = new Member(email, platform, platformId, MemberStatus.MEMBER_ACTIVE);
                     Member savedMember = memberRepository.save(oauthMember);
                     String token = issueToken(savedMember);
-                    return new OAuthTokenResponse(token, email, false, platformId);
+                    return new OAuthTokenResponse(savedMember.getId(), token, email, false, platformId);
                 });
     }
 }
