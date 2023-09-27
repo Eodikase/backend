@@ -28,7 +28,7 @@ public class AuthController {
     @PostMapping
     public Response<?> login(@RequestBody @Valid AuthLoginRequest request) {
         TokenResponse response = authService.login(request);
-        return Response.ofSuccess("OK", response.getToken());
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "카카오 OAuth 로그인")
