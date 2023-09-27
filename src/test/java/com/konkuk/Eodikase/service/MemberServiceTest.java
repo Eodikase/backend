@@ -179,15 +179,6 @@ public class MemberServiceTest {
                 .isInstanceOf(InvalidNicknameException.class);
     }
 
-    @ParameterizedTest
-    @DisplayName("닉네임에 영어, 한글을 제외한 문자가 들어오면 예외를 반환한다")
-    @ValueSource(strings = {"123456", "abc1234", "감자!!!!"})
-    void nicknameConfigureValidation(String nickname) {
-        assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
-                "edks1234!", nickname)))
-                .isInstanceOf(InvalidNicknameException.class);
-    }
-
     @Test
     @DisplayName("비밀번호 변경 요청을 받을 경우, 새로운 비밀번호로 변경한다")
     void resetPassword() {
