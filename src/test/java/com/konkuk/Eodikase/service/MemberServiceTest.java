@@ -171,8 +171,8 @@ public class MemberServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("닉네임이 2~8자가 아니면 예외를 반환한다")
-    @ValueSource(strings = {"감", "감자포테이토예에에"})
+    @DisplayName("닉네임이 2~15자가 아니면 예외를 반환한다")
+    @ValueSource(strings = {"감", "감자포테이토토토토토토토토토토토토토예에에"})
     void nicknameLengthValidation(String nickname) {
         assertThatThrownBy(() -> memberService.signUp(new MemberSignUpRequest("dlawotn3@naver.com",
                 "edks1234!", nickname)))
