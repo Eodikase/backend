@@ -1,14 +1,12 @@
 package com.konkuk.Eodikase.domain.member.service;
 
+import com.konkuk.Eodikase.domain.course.repository.CourseRepository;
+import com.konkuk.Eodikase.domain.member.entity.*;
 import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
 import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
 import com.konkuk.Eodikase.dto.request.member.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.dto.request.member.PasswordVerifyRequest;
-import com.konkuk.Eodikase.domain.member.entity.Member;
-import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
-import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
-import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.dto.response.member.*;
