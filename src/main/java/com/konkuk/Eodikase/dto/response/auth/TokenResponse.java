@@ -10,9 +10,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class TokenResponse {
+    private Long memberId;
     private String token;
 
-    public static TokenResponse from(final String token) {
-        return new TokenResponse(token);
+    public static TokenResponse from(final Long memberId, final String token) {
+        return new TokenResponse(memberId, token);
     }
 }
