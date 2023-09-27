@@ -47,6 +47,8 @@ public class CourseService {
     @Transactional
     public Long saveCourse(Long memberId, CoursePostRequest request) {
 
+
+
         Member member = memberRepository.findById(memberId).get();
         Course course = Course.builder()
                         .courseName(request.getCourseName())
@@ -56,10 +58,10 @@ public class CourseService {
         course.assignMember(member);
         Long courseId = courseRepository.save(course).getId();
 
-        if(request.getCourseDataIdList().size() < 2 || request.getCourseDataIdList().size() > 10 ){
+        if(request.getCourseDatas().size() < 2 || request.getCourseDatas().size() > 10 ){
             throw new CourseDataCountException();
         }
-        for(Long hashtagId : request.getHashTagNameIdList()){
+        for(Long hashtagId : request.getHashTagNames()){
             Hashtag hashtag = hashtagRepository.findById(hashtagId).orElseThrow(NotFoundHashtagException::new);
             CourseHashtagRel courseHashtagRel = CourseHashtagRel.builder().hashtag(hashtag).build();
             courseHashtagRel.assignCourse(course);
@@ -67,8 +69,8 @@ public class CourseService {
         }
 
         CourseCourseDataRel courseCourseDataRel;
-        if(request.getCourseDataRegion().equals("EM")){
-            for(Long courseDataId :request.getCourseDataIdList()){
+        if(request.getCourseRegion().getRegion().equals("EM")){
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataEM courseDataEM = courseDataEMRepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataEM(courseDataEM)
@@ -76,8 +78,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
-        } else if (request.getCourseDataRegion().equals("HI")) {
-            for(Long courseDataId :request.getCourseDataIdList()){
+        } else if (request.getCourseRegion().getRegion().equals("HI")) {
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataHI courseDataHI = courseDataHIRepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataHI(courseDataHI)
@@ -85,8 +87,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
-        } else if (request.getCourseDataRegion().equals("HSE")) {
-            for(Long courseDataId :request.getCourseDataIdList()){
+        } else if (request.getCourseRegion().getRegion().equals("HSE")) {
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataHSE courseDataHSE = courseDataHSERepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataHSE(courseDataHSE)
@@ -94,8 +96,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
-        } else if (request.getCourseDataRegion().equals("KSS")) {
-            for(Long courseDataId :request.getCourseDataIdList()){
+        } else if (request.getCourseRegion().getRegion().equals("KSS")) {
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataKSS courseDataKSS = courseDataKSSRepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataKSS(courseDataKSS)
@@ -103,8 +105,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
-        } else if (request.getCourseDataRegion().equals("NS")) {
-            for(Long courseDataId :request.getCourseDataIdList()){
+        } else if (request.getCourseRegion().getRegion().equals("NS")) {
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataNS courseDataNS = courseDataNSRepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataNS(courseDataNS)
@@ -112,8 +114,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
-        } else if (request.getCourseDataRegion().equals("SBG")) {
-            for(Long courseDataId :request.getCourseDataIdList()){
+        } else if (request.getCourseRegion().getRegion().equals("SBG")) {
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataSBG courseDataSBG = courseDataSBGRepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataSBG(courseDataSBG)
@@ -121,8 +123,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
-        } else if (request.getCourseDataRegion().equals("SH")) {
-            for(Long courseDataId :request.getCourseDataIdList()){
+        } else if (request.getCourseRegion().getRegion().equals("SH")) {
+            for(Long courseDataId :request.getCourseDatas()){
                 CourseDataSH courseDataSH = courseDataSHRepository.findById(courseDataId).orElseThrow(NotFoundCourseException::new);
                 courseCourseDataRel = CourseCourseDataRel.builder()
                         .courseDataSH(courseDataSH)

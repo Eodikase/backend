@@ -80,6 +80,7 @@ public class CourseController {
         courseService.insertScore(courseId,score);
         return Response.ofSuccess("OK", null);
     }
+
 }
 
 
