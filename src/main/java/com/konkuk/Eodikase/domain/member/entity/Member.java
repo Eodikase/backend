@@ -179,4 +179,8 @@ public class Member extends BaseEntity {
     public boolean isRegisteredOAuthMember() {
         return nickname != null;
     }
+
+    public void setAdminRole() {
+        this.role = MemberRole.ADMIN;
+    }
 }
