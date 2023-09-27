@@ -1,5 +1,8 @@
 package com.konkuk.Eodikase.domain.member.service;
 
+import com.konkuk.Eodikase.domain.bookmark.repository.BookmarkRepository;
+import com.konkuk.Eodikase.domain.course.repository.CourseRepository;
+import com.konkuk.Eodikase.domain.like.repository.LikeRepository;
 import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
 import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
@@ -25,6 +28,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -38,6 +42,7 @@ public class MemberService {
     private final MemberProfileImageRepository memberProfileImageRepository;
     private final PasswordEncoder passwordEncoder;
     private final AwsS3Uploader awsS3Uploader;
+    private final CourseRepository courseRepository;
 
     public MemberSignUpResponse signUp(MemberSignUpRequest request) {
         validateDuplicateMember(request);
@@ -159,6 +164,8 @@ public class MemberService {
         LocalDate thresholdLocalDate = LocalDate.now().minusDays(30);
         Instant instant = thresholdLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         Date thresholdDate = Date.from(instant);
+        memberRepository.findMemberByCreatedTime(thresholdDate, MemberStatus.MEMBER_QUIT)
+                .forEach(m -> courseRepository.deleteByMember(m));
         memberRepository.deleteMemberByCreatedTime(thresholdDate, MemberStatus.MEMBER_QUIT);
     }
 

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member,Long> {
@@ -24,6 +25,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("select m.id from Member m where m.platform = :platform and m.platformId = :platformId")
     Optional<Long> findIdByPlatformAndPlatformId(MemberPlatform platform, String platformId);
 
+    @Query("select m from Member m where m.modifiedDate <= :thresholdDate and m.status = :status")
+    List<Member> findMemberByCreatedTime(@Param("thresholdDate") Date thresholdDate, @Param("status") MemberStatus status);
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Member m where m.modifiedDate <= :thresholdDate and m.status = :status")
     void deleteMemberByCreatedTime(@Param("thresholdDate") Date thresholdDate, @Param("status") MemberStatus status);
