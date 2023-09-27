@@ -10,6 +10,6 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class ResetPasswordRequest {
 
-    @NotBlank(message = "1012:공백일 수 없습니다.")
+    @NotBlank(message = "1005:공백일 수 없습니다.")
     private String password;
 }
