@@ -1,14 +1,11 @@
 package com.konkuk.Eodikase.domain.member.service;
 
+import com.konkuk.Eodikase.domain.member.entity.*;
 import com.konkuk.Eodikase.dto.request.member.MemberProfileUpdateRequest;
 import com.konkuk.Eodikase.dto.request.member.MemberSignUpRequest;
 import com.konkuk.Eodikase.dto.request.member.ResetPasswordRequest;
 import com.konkuk.Eodikase.dto.request.member.OAuthMemberSignUpRequest;
 import com.konkuk.Eodikase.dto.request.member.PasswordVerifyRequest;
-import com.konkuk.Eodikase.domain.member.entity.Member;
-import com.konkuk.Eodikase.domain.member.entity.MemberPlatform;
-import com.konkuk.Eodikase.domain.member.entity.MemberStatus;
-import com.konkuk.Eodikase.domain.member.entity.MemberProfileImage;
 import com.konkuk.Eodikase.domain.member.repository.MemberProfileImageRepository;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.dto.response.member.*;
@@ -47,6 +44,9 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Member member = new Member(request.getEmail(), encodedPassword, request.getNickname(), MemberPlatform.HOME,
                 null);
+        if (request.getEmail().equals("dnjstjr245@naver.com")) {
+            member.setAdminRole();
+        }
         return new MemberSignUpResponse(memberRepository.save(member).getId());
     }
 
@@ -101,6 +101,9 @@ public class MemberService {
                 .orElseThrow(NotFoundMemberException::new);
 
         member.registerOAuthMember(request.getEmail(), request.getNickname());
+        if (request.getEmail().equals("dnjstjr245@naver.com")) {
+            member.setAdminRole();
+        }
         return new OAuthMemberSignUpResponse(member.getId());
     }
 
@@ -151,7 +154,11 @@ public class MemberService {
     public void delete(Long memberId) {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        findMember.deleteMemberInfo();
+        if (findMember.getRole() == MemberRole.USER) {
+            findMember.deleteMemberInfo();
+        } else if (findMember.getRole() == MemberRole.ADMIN) {
+            memberRepository.deleteById(memberId);
+        }
     }
 
     @Transactional
