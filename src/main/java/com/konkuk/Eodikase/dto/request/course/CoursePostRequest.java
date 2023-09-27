@@ -18,10 +18,8 @@ public class CoursePostRequest {
 
     private Boolean isOpen;
 
-    private List<Long> courseDataIdList;
+    private List<Long> courseDatas;
 
-    private String CourseDataRegion;
-
-    private List<Long> hashTagNameIdList;
+    private List<Long> hashTagNames;
 
 }
