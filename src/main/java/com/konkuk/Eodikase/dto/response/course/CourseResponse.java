@@ -26,8 +26,8 @@ public class CourseResponse {
     private int likeCount;
     private Timestamp createdDate;
     private double courseScore;
-    private List<CourseCourseDataRelResponse> courseDataList;
-    private List<CourseHashtagRelResponse> hashtagList;
+    private List<CourseCourseDataRelResponse> courseItems;
+    private List<CourseHashtagRelResponse> hashTags;
 
 
 
@@ -41,16 +41,16 @@ public class CourseResponse {
         this.nickname = course.getMember().getNickname();
         this.memberProfileImage = course.getMember().getMemberProfileImage();
         this.bookmarkCount = course.getBookmarkList().size();
-        this.courseDataList = course.getCourseDataRelList().stream().map(CourseCourseDataRelResponse::new).collect(Collectors.toList());
+        this.courseItems = course.getCourseDataRelList().stream().map(CourseCourseDataRelResponse::new).collect(Collectors.toList());
         this.likeCount = course.getLikeList().size();
         this.createdDate = course.getCreatedDate();
         this.courseScore = course.getCourseScore();
-        this.hashtagList = course.getHashtagRelList().stream().map(CourseHashtagRelResponse::new).collect(Collectors.toList());
+        this.hashTags = course.getHashtagRelList().stream().map(CourseHashtagRelResponse::new).collect(Collectors.toList());
 
     }
     @Data
     static class CourseCourseDataRelResponse{
-        private Long courseDataId;
+        private Long courseItemId;
         private String name;
         private String imageUrl;
         private String category;
@@ -65,31 +65,31 @@ public class CourseResponse {
         public CourseCourseDataRelResponse(CourseCourseDataRel courseCourseDataRel){
 
             if (courseCourseDataRel.getCourseDataEM() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataEM().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataEM().getId();
                 updateFields(courseCourseDataRel.getCourseDataEM());
             }
             if (courseCourseDataRel.getCourseDataHI() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataHI().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataHI().getId();
                 updateFields(courseCourseDataRel.getCourseDataHI());
             }
             if (courseCourseDataRel.getCourseDataHSE() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataHSE().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataHSE().getId();
                 updateFields(courseCourseDataRel.getCourseDataHSE());
             }
             if (courseCourseDataRel.getCourseDataKSS() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataKSS().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataKSS().getId();
                 updateFields(courseCourseDataRel.getCourseDataKSS());
             }
             if (courseCourseDataRel.getCourseDataNS() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataNS().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataNS().getId();
                 updateFields(courseCourseDataRel.getCourseDataNS());
             }
             if (courseCourseDataRel.getCourseDataSBG() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataSBG().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataSBG().getId();
                 updateFields(courseCourseDataRel.getCourseDataSBG());
             }
             if (courseCourseDataRel.getCourseDataSH() != null) {
-                this.courseDataId = courseCourseDataRel.getCourseDataSH().getId();
+                this.courseItemId = courseCourseDataRel.getCourseDataSH().getId();
                 updateFields(courseCourseDataRel.getCourseDataSH());
             }
         }

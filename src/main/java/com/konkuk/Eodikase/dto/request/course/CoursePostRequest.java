@@ -18,7 +18,7 @@ public class CoursePostRequest {
 
     private Boolean isOpen;
 
-    private List<Long> courseDatas;
+    private List<Long> courseItemIds;
 
     private List<Long> hashTagNames;
 
