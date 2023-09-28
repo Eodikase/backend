@@ -15,11 +15,13 @@ import com.konkuk.Eodikase.domain.data.repository.*;
 import com.konkuk.Eodikase.domain.member.entity.Member;
 import com.konkuk.Eodikase.domain.member.repository.MemberRepository;
 import com.konkuk.Eodikase.dto.response.course.CourseResponse;
+import com.konkuk.Eodikase.exception.badrequest.InvalidRegionException;
 import com.konkuk.Eodikase.exception.course.CourseDataCountException;
 import com.konkuk.Eodikase.exception.course.CourseNotAuthorizedException;
 import com.konkuk.Eodikase.exception.course.NotFoundCourseException;
 import com.konkuk.Eodikase.exception.hashtag.NotFoundHashtagException;
 import com.konkuk.Eodikase.exception.score.InvalidScoreException;
+import com.konkuk.Eodikase.exception.score.NotMyCourseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -132,6 +134,8 @@ public class CourseService {
                 courseCourseDataRel.assignCourse(course);
                 courseCourseDataRelRepository.save(courseCourseDataRel);
             }
+        }else {
+            throw new InvalidRegionException();
         }
         return courseRepository.save(course).getId();
     }
@@ -165,9 +169,10 @@ public class CourseService {
     }
 
     @Transactional
-    public void insertScore(Long courseId, double score) {
+    public void insertScore(Long courseId, double score,Long memberId ) {
         if(score > 5 || score <0) throw new InvalidScoreException();
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundCourseException::new);
+        if(course.getMember().getId() != memberId) throw new NotMyCourseException();
         course.updateScore(score);
     }
 }

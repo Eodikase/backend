@@ -77,7 +77,7 @@ public class CourseController {
     public Response listByRegion(@LoginUserId Long memberId,
                                  @PathVariable("course-id") Long courseId,
                                  @RequestParam double score ) {
-        courseService.insertScore(courseId,score);
+        courseService.insertScore(courseId,score, memberId);
         return Response.ofSuccess("OK", null);
     }
 
