@@ -3,11 +3,8 @@ package com.konkuk.Eodikase.domain.data.controller;
 import com.konkuk.Eodikase.domain.data.service.CourseDataService;
 import com.konkuk.Eodikase.dto.request.data.FilteredCourseDataCountRequest;
 import com.konkuk.Eodikase.dto.request.data.FilteredCourseDataRequest;
-import com.konkuk.Eodikase.dto.response.data.CourseDataDetailInfoResponse;
-import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataCountResponse;
-import com.konkuk.Eodikase.dto.response.data.FilteredCourseDataResponse;
+import com.konkuk.Eodikase.dto.response.data.*;
 import com.konkuk.Eodikase.dto.response.Response;
-import com.konkuk.Eodikase.dto.response.data.SearchCourseDatasResponse;
 import com.konkuk.Eodikase.security.auth.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -75,6 +72,18 @@ public class CourseDataController {
     ) {
         SearchCourseDatasResponse response = courseDataService.searchCourseDataByKeyword(
                 memberId, region, category, keyword, page, 10);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "지역별 코스 아이템 개수 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/{region}/count")
+    public Response<?> getCourseDataCountByRegion(
+            @LoginUserId Long memberId,
+            @PathVariable String region
+    ) {
+        CourseDataCountByRegionResponse response = courseDataService.findCourseDataCountByRegion(
+                memberId, region);
         return Response.ofSuccess("OK", response);
     }
 }

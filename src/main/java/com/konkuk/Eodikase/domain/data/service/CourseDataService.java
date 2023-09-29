@@ -457,4 +457,27 @@ public class CourseDataService {
 
         return new SearchCourseDatasResponse(courseDataResponses, last);
     }
+
+    public CourseDataCountByRegionResponse findCourseDataCountByRegion(Long memberId, String region) {
+        memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (region.equals("EM")) {
+            return new CourseDataCountByRegionResponse((int) courseDataEMRepository.count());
+        } else if (region.equals("HI")) {
+            return new CourseDataCountByRegionResponse((int) courseDataHIRepository.count());
+        } else if (region.equals("HSE")) {
+            return new CourseDataCountByRegionResponse((int) courseDataHSERepository.count());
+        } else if (region.equals("KSS")) {
+            return new CourseDataCountByRegionResponse((int) courseDataKSSRepository.count());
+        } else if (region.equals("NS")) {
+            return new CourseDataCountByRegionResponse((int) courseDataNSRepository.count());
+        } else if (region.equals("SBG")) {
+            return new CourseDataCountByRegionResponse((int) courseDataSBGRepository.count());
+        } else if (region.equals("SH")) {
+            return new CourseDataCountByRegionResponse((int) courseDataSHRepository.count());
+        } else {
+            throw new InvalidRegionException();
+        }
+    }
 }
