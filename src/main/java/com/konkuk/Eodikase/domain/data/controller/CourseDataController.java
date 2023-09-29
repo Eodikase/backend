@@ -23,7 +23,7 @@ public class CourseDataController {
 
     @Operation(summary = "타입별 코스 아이템 조회")
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/{region}/items")
+    @PostMapping("/{region}/items")
     public Response<?> getFilteredCourseData(
             @LoginUserId Long memberId,
             @PathVariable String region,
@@ -52,7 +52,7 @@ public class CourseDataController {
 
     @Operation(summary = "특정 반경 내의 코스 아이템 개수 조회")
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/{region}/items/count")
+    @PostMapping("/{region}/items/count")
     public Response<?> getCourseDataCountByRadius(
             @LoginUserId Long memberId,
             @PathVariable String region,
