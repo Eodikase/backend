@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CourseDataSBGRepository extends JpaRepository<CourseDataSBG, Long> {
+
+    long count();
+
     List<CourseDataSBG> findByCourseDataCategory(CourseDataCategory category);
 
     Page<CourseDataSBG> findByCourseDataCategoryAndNameContaining(CourseDataCategory category, String keyword, Pageable pageable);
