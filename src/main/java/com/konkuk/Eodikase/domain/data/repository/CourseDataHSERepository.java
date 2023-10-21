@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.data.repository;
 
 import com.konkuk.Eodikase.domain.data.entity.CourseDataCategory;
+import com.konkuk.Eodikase.domain.data.entity.CourseDataEM;
 import com.konkuk.Eodikase.domain.data.entity.CourseDataHSE;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,4 +13,6 @@ public interface CourseDataHSERepository extends JpaRepository<CourseDataHSE, Lo
     List<CourseDataHSE> findByCourseDataCategory(CourseDataCategory category);
 
     Page<CourseDataHSE> findByCourseDataCategoryAndNameContaining(CourseDataCategory category, String keyword, Pageable pageable);
+
+    List<CourseDataHSE> findByNameContaining(String keyword);
 }

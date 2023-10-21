@@ -15,4 +15,5 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
     Page<Course> findAllByRegionAndIsOpen(CourseRegion region,Boolean open, Pageable pageable);
     Page<Course> findAllByMemberAndIsOpen(Member member, Boolean open, Pageable pageable);
     void deleteByMember(Member member);
+    Page<Course> findByCourseNameOrCourseDescriptionContaining(String keyword, Pageable pageable);
 }

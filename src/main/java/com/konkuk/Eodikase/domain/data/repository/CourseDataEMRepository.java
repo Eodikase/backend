@@ -12,4 +12,6 @@ public interface CourseDataEMRepository extends JpaRepository<CourseDataEM, Long
     List<CourseDataEM> findByCourseDataCategory(CourseDataCategory category);
 
     Page<CourseDataEM> findByCourseDataCategoryAndNameContaining(CourseDataCategory category, String keyword, Pageable pageable);
+
+    List<CourseDataEM> findByNameContaining(String keyword);
 }

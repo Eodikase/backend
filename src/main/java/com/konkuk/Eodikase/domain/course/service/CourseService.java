@@ -20,6 +20,7 @@ import com.konkuk.Eodikase.exception.course.CourseDataCountException;
 import com.konkuk.Eodikase.exception.course.CourseNotAuthorizedException;
 import com.konkuk.Eodikase.exception.course.NotFoundCourseException;
 import com.konkuk.Eodikase.exception.hashtag.NotFoundHashtagException;
+import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.exception.score.InvalidScoreException;
 import com.konkuk.Eodikase.exception.score.NotMyCourseException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -151,7 +154,7 @@ public class CourseService {
 
     }
     public Page<CourseResponse> getCoursesByMember(Long memberId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId).get();
+        Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
         Page<CourseResponse> map = courseRepository.findAllByMemberAndIsOpen(member,true,pageable).map(CourseResponse::new);
         return map;
     }
@@ -174,5 +177,36 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundCourseException::new);
         if(course.getMember().getId() != memberId) throw new NotMyCourseException();
         course.updateScore(score);
+    }
+
+    public Page<CourseResponse> searchByData(String keyword, Pageable pageable) {
+
+        List<CourseDataEM> courseDataEMs = courseDataEMRepository.findByNameContaining(keyword);
+        List<CourseDataHI> courseDataHIs = courseDataHIRepository.findByNameContaining(keyword);
+        List<CourseDataHSE> courseDataHSEs = courseDataHSERepository.findByNameContaining(keyword);
+        List<CourseDataKSS> courseDataKSSs = courseDataKSSRepository.findByNameContaining(keyword);
+        List<CourseDataNS> courseDataNSs = courseDataNSRepository.findByNameContaining(keyword);
+        List<CourseDataSBG> courseDataSBGs = courseDataSBGRepository.findByNameContaining(keyword);
+        List<CourseDataSH> courseDataSHs = courseDataSHRepository.findByNameContaining(keyword);
+
+        Page<Course> courses = courseCourseDataRelRepository.findCourseByCourseDataEMInOrCourseDataHIInOrCourseDataHSEInOrCourseDataNSInOrCourseDataKSSInOrCourseDataSBGInOrCourseDataSHIn(
+                courseDataEMs,
+                courseDataHIs,
+                courseDataHSEs,
+                courseDataKSSs,
+                courseDataNSs,
+                courseDataSBGs,
+                courseDataSHs,
+                pageable
+        );
+
+        Page<CourseResponse> map = courses.map(CourseResponse::new);
+        return map;
+    }
+
+    public Page<CourseResponse> searchByTitle(String keyword, Pageable pageable) {
+        Page<CourseResponse> map
+                = courseRepository.findByCourseNameOrCourseDescriptionContaining(keyword, pageable).map(CourseResponse::new);
+        return map;
     }
 }

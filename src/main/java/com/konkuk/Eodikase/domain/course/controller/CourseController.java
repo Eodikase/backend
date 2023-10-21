@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -81,6 +82,23 @@ public class CourseController {
         return Response.ofSuccess("OK", null);
     }
 
+
+    @Operation(summary = "코스검색by코스데이터 ")
+    @GetMapping("/search/data")
+    public Response listByCouseData(
+            @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam String keyword) {
+        Page<CourseResponse> courseByData = courseService.searchByData(keyword, pageable);
+        return Response.ofSuccess("OK", courseByData);
+    }
+    @Operation(summary = "코스검색by코스제목 ")
+    @GetMapping("/search/title")
+    public Response listByTitle(
+            @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam String keyword) {
+        Page<CourseResponse> courseByTitle = courseService.searchByTitle(keyword, pageable);
+        return Response.ofSuccess("OK", courseByTitle);
+    }
 }
 
 
