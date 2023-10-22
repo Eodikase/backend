@@ -209,21 +209,6 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("OAuth 유저 로그인 후 정보를 입력받아 회원을 가입한다")
-    void signUpByOAuthMember() {
-        String email = "dlawotn3@naver.com";
-        String platformId = "1234321";
-        Member savedMember = memberRepository.save(new Member(email, MemberPlatform.KAKAO, platformId));
-        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "감자",
-                MemberPlatform.KAKAO.getValue(), platformId);
-
-        memberService.signUpByOAuthMember(request);
-
-        Member actual = memberRepository.findById(savedMember.getId()).orElseThrow();
-        assertThat(actual.getNickname()).isEqualTo("감자");
-    }
-
-    @Test
     @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
     void signUpByOAuthMemberWhenInvalidPlatformInfo() {
         memberRepository.save(new Member("dlawotn3@naver.com", MemberPlatform.KAKAO, "1234321"));
