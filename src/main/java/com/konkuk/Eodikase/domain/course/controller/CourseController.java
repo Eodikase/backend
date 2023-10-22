@@ -81,6 +81,17 @@ public class CourseController {
         return Response.ofSuccess("OK", null);
     }
 
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "마이페이지 - 스크랩한 코스 목록 조회")
+    @GetMapping(value = "/myscraps")
+    public Response<?> findScrapedCourses(
+            @LoginUserId Long memberId,
+            @PageableDefault(size = 20, sort = "createdDate",
+                    direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<CourseResponse> courses = courseService.findScrapedCourses(memberId, pageable);
+        return Response.ofSuccess("OK", courses);
+    }
 }
 
 
