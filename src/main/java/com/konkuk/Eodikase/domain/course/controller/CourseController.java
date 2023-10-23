@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.course.controller;
 
 import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
+import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.service.CourseService;
 import com.konkuk.Eodikase.dto.response.course.CourseResponse;

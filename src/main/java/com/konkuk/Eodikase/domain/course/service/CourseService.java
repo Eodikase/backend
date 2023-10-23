@@ -1,8 +1,10 @@
 package com.konkuk.Eodikase.domain.course.service;
 
+import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.course.entity.CourseHashtagRel;
 import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
 import com.konkuk.Eodikase.domain.course.repository.CourseHashtagRelRepository;
+import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import com.konkuk.Eodikase.domain.hashtag.entity.Hashtag;
 import com.konkuk.Eodikase.domain.hashtag.repository.HashtagRepository;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
@@ -20,6 +22,7 @@ import com.konkuk.Eodikase.exception.course.CourseDataCountException;
 import com.konkuk.Eodikase.exception.course.CourseNotAuthorizedException;
 import com.konkuk.Eodikase.exception.course.NotFoundCourseException;
 import com.konkuk.Eodikase.exception.hashtag.NotFoundHashtagException;
+import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.exception.score.InvalidScoreException;
 import com.konkuk.Eodikase.exception.score.NotMyCourseException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
