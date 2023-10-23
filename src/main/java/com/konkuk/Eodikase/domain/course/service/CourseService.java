@@ -4,6 +4,7 @@ import com.konkuk.Eodikase.domain.bookmark.entity.Bookmark;
 import com.konkuk.Eodikase.domain.course.entity.CourseHashtagRel;
 import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
 import com.konkuk.Eodikase.domain.course.repository.CourseHashtagRelRepository;
+import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import com.konkuk.Eodikase.domain.hashtag.entity.Hashtag;
 import com.konkuk.Eodikase.domain.hashtag.repository.HashtagRepository;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
@@ -194,5 +195,57 @@ public class CourseService {
                 .map(CourseResponse::new);
 
         return courses;
+    }
+
+    public Page<CourseResponse> searchByData(String keyword, Pageable pageable) {
+
+        //TODO 어떤 로직을 가져야 최적화가 될지
+
+//        List<CourseDataEM> courseDataEMs = courseDataEMRepository.findByNameContaining(keyword);
+//        List<CourseDataHI> courseDataHIs = courseDataHIRepository.findByNameContaining(keyword);
+//        List<CourseDataHSE> courseDataHSEs = courseDataHSERepository.findByNameContaining(keyword);
+//        List<CourseDataKSS> courseDataKSSs = courseDataKSSRepository.findByNameContaining(keyword);
+//        List<CourseDataNS> courseDataNSs = courseDataNSRepository.findByNameContaining(keyword);
+//        List<CourseDataSBG> courseDataSBGs = courseDataSBGRepository.findByNameContaining(keyword);
+//        List<CourseDataSH> courseDataSHs = courseDataSHRepository.findByNameContaining(keyword);
+//
+//        Page<CourseCourseDataRel> courseRels = courseCourseDataRelRepository.findByCourseDataEMInOrCourseDataHIInOrCourseDataHSEInOrCourseDataNSInOrCourseDataKSSInOrCourseDataSBGInOrCourseDataSHIn(
+//                courseDataEMs,
+//                courseDataHIs,
+//                courseDataHSEs,
+//                courseDataKSSs,
+//                courseDataNSs,
+//                courseDataSBGs,
+//                courseDataSHs,
+//                pageable
+//        );
+
+        Page<CourseCourseDataRel> courseDataRels = courseCourseDataRelRepository.findByCourseDataEMNameContainingOrCourseDataHINameContainingOrCourseDataHSENameContainingOrCourseDataNSNameContainingOrCourseDataKSSNameContainingOrCourseDataSBGNameContainingOrCourseDataSHNameContaining(
+                keyword,
+                keyword,
+                keyword,
+                keyword,
+                keyword,
+                keyword,
+                keyword,
+                pageable
+        );
+
+        Page<CourseResponse> map = courseDataRels.map(CourseCourseDataRel::getCourse).map(CourseResponse::new);
+        return map;
+    }
+
+    public Page<CourseResponse> searchByTitle(String keyword, Pageable pageable) {
+        Page<CourseResponse> map
+                = courseRepository.findByCourseNameContainingOrCourseDescriptionContaining(keyword,keyword, pageable).map(CourseResponse::new);
+        return map;
+    }
+
+    public Page<CourseResponse> searchByTag(HashTagName tag, Pageable pageable) {
+
+        Page<CourseHashtagRel> hashtagRels = courseHashtagRelRepository.findByHashtagHashTagName(tag,pageable);
+
+        Page<CourseResponse> map = hashtagRels.map(CourseHashtagRel::getCourse).map(CourseResponse::new);
+        return map;
     }
 }

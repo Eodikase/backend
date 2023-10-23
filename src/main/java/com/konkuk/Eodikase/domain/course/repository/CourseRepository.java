@@ -18,4 +18,5 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
     @Query("SELECT c FROM Course c WHERE c.id IN :courseIds")
     Page<Course> findCoursesByIdIn(@Param("courseIds") List<Long> courseIds, Pageable pageable);
     void deleteByMember(Member member);
+    Page<Course> findByCourseNameContainingOrCourseDescriptionContaining(String keywordN,String keywordD, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.konkuk.Eodikase.domain.course.controller;
 
 import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
+import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
 import com.konkuk.Eodikase.domain.course.service.CourseService;
 import com.konkuk.Eodikase.dto.response.course.CourseResponse;
@@ -91,6 +92,32 @@ public class CourseController {
     ) {
         Page<CourseResponse> courses = courseService.findScrapedCourses(memberId, pageable);
         return Response.ofSuccess("OK", courses);
+    }
+
+    @Operation(summary = "코스검색by코스데이터 ")
+    @GetMapping("/data/search")
+    public Response listByCouseData(
+            @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam String keyword) {
+        Page<CourseResponse> courseByData = courseService.searchByData(keyword, pageable);
+        return Response.ofSuccess("OK", courseByData);
+    }
+    @Operation(summary = "코스검색by코스제목 ")
+    @GetMapping("/title/search")
+    public Response listByTitle(
+            @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam String keyword) {
+        Page<CourseResponse> courseByTitle = courseService.searchByTitle(keyword, pageable);
+        return Response.ofSuccess("OK", courseByTitle);
+    }
+
+    @Operation(summary = "코스검색by해시태그 ")
+    @GetMapping("/tag/search")
+    public Response listByTag(
+            @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam HashTagName tag) {
+        Page<CourseResponse> courseBytag = courseService.searchByTag(tag, pageable);
+        return Response.ofSuccess("OK", courseBytag);
     }
 }
 
