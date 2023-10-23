@@ -95,7 +95,7 @@ public class CourseController {
     }
 
     @Operation(summary = "코스검색by코스데이터 ")
-    @GetMapping("/search/data")
+    @GetMapping("/data/search")
     public Response listByCouseData(
             @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam String keyword) {
@@ -103,7 +103,7 @@ public class CourseController {
         return Response.ofSuccess("OK", courseByData);
     }
     @Operation(summary = "코스검색by코스제목 ")
-    @GetMapping("/search/title")
+    @GetMapping("/title/search")
     public Response listByTitle(
             @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam String keyword) {
@@ -112,7 +112,7 @@ public class CourseController {
     }
 
     @Operation(summary = "코스검색by해시태그 ")
-    @GetMapping("/search/tag")
+    @GetMapping("/tag/search")
     public Response listByTag(
             @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam HashTagName tag) {
