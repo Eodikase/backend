@@ -3,7 +3,6 @@ package com.konkuk.Eodikase.domain.course.service;
 import com.konkuk.Eodikase.domain.course.entity.CourseHashtagRel;
 import com.konkuk.Eodikase.domain.course.entity.CourseRegion;
 import com.konkuk.Eodikase.domain.course.repository.CourseHashtagRelRepository;
-import com.konkuk.Eodikase.domain.hashtag.entity.HashTagName;
 import com.konkuk.Eodikase.domain.hashtag.entity.Hashtag;
 import com.konkuk.Eodikase.domain.hashtag.repository.HashtagRepository;
 import com.konkuk.Eodikase.dto.request.course.CoursePostRequest;
@@ -21,7 +20,6 @@ import com.konkuk.Eodikase.exception.course.CourseDataCountException;
 import com.konkuk.Eodikase.exception.course.CourseNotAuthorizedException;
 import com.konkuk.Eodikase.exception.course.NotFoundCourseException;
 import com.konkuk.Eodikase.exception.hashtag.NotFoundHashtagException;
-import com.konkuk.Eodikase.exception.notfound.NotFoundMemberException;
 import com.konkuk.Eodikase.exception.score.InvalidScoreException;
 import com.konkuk.Eodikase.exception.score.NotMyCourseException;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -156,7 +151,7 @@ public class CourseService {
 
     }
     public Page<CourseResponse> getCoursesByMember(Long memberId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findById(memberId).get();
         Page<CourseResponse> map = courseRepository.findAllByMemberAndIsOpen(member,true,pageable).map(CourseResponse::new);
         return map;
     }
@@ -179,6 +174,21 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundCourseException::new);
         if(course.getMember().getId() != memberId) throw new NotMyCourseException();
         course.updateScore(score);
+    }
+
+    public Page<CourseResponse> findScrapedCourses(Long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        List<Bookmark> bookmarkList = member.getBookmarkList();
+
+        List<Long> courseIds = bookmarkList.stream()
+                .map(bookmark -> bookmark.getCourse().getId())
+                .collect(Collectors.toList());
+
+        Page<CourseResponse> courses = courseRepository.findCoursesByIdIn(courseIds, pageable)
+                .map(CourseResponse::new);
+
+        return courses;
     }
 
     public Page<CourseResponse> searchByData(String keyword, Pageable pageable) {
