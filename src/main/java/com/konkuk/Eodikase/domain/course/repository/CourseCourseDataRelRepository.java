@@ -15,14 +15,18 @@ import java.util.List;
 public interface CourseCourseDataRelRepository extends JpaRepository<CourseCourseDataRel,Long> {
     List<CourseCourseDataRel> findByCourseId(Long courseId);
 
-    Page<Course> findCourseByCourseDataEMInOrCourseDataHIInOrCourseDataHSEInOrCourseDataNSInOrCourseDataKSSInOrCourseDataSBGInOrCourseDataSHIn(
-            List<CourseDataEM> courseDataEMs,
-            List<CourseDataHI> courseDataHIs,
-            List<CourseDataHSE> courseDataHSEs,
-            List<CourseDataKSS> courseDataKSSs,
-            List<CourseDataNS> courseDataNSs,
-            List<CourseDataSBG> courseDataSBGs,
-            List<CourseDataSH> courseDataSHs,
-            Pageable pageable
-    );
+//    Page<CourseCourseDataRel> findByCourseDataEMInOrCourseDataHIInOrCourseDataHSEInOrCourseDataNSInOrCourseDataKSSInOrCourseDataSBGInOrCourseDataSHIn(
+//            List<CourseDataEM> courseDataEMs,
+//            List<CourseDataHI> courseDataHIs,
+//            List<CourseDataHSE> courseDataHSEs,
+//            List<CourseDataKSS> courseDataKSSs,
+//            List<CourseDataNS> courseDataNSs,
+//            List<CourseDataSBG> courseDataSBGs,
+//            List<CourseDataSH> courseDataSHs,
+//            Pageable pageable
+//    );
+
+    Page<CourseCourseDataRel> findByCourseDataEMNameContainingOrCourseDataHINameContainingOrCourseDataHSENameContainingOrCourseDataNSNameContainingOrCourseDataKSSNameContainingOrCourseDataSBGNameContainingOrCourseDataSHNameContaining
+            (String keyword,String keyword2,String keyword3,String keyword4,String keyword5,String keyword6,String keyword7,Pageable pageable);
+
 }

@@ -1,5 +1,6 @@
 package com.konkuk.Eodikase.domain.course.entity;
 
+import com.konkuk.Eodikase.domain.audit.BaseEntity;
 import com.konkuk.Eodikase.domain.data.entity.*;
 import com.konkuk.Eodikase.domain.hashtag.entity.Hashtag;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "course_hashtag_rel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CourseHashtagRel {
+public class CourseHashtagRel extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
